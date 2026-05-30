@@ -4,68 +4,86 @@ import { Globe, ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-const TYPE_LABELS: Record<string, string> = {
-  "university": "University", "research-body": "Research Body",
-  "government": "Government", "ngo": "NGO", "development-bank": "Development Bank",
+const TYPE_LABELS: Record<string,string> = {
+  "university":"University","research-body":"Research Body",
+  "government":"Government","ngo":"NGO","development-bank":"Development Bank",
 };
 
 export default async function PartnershipsPage() {
   const partners = await prisma.partnership.findMany({
-    where: { active: true },
-    orderBy: [{ featured: "desc" }, { institution: "asc" }],
+    where: { active:true },
+    orderBy: [{ featured:"desc" },{ institution:"asc" }],
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20">
-      <div className="mb-16">
-        <div className="text-[9px] tracking-[0.35em] uppercase text-gold/70 font-mono mb-4">Institutional Partners</div>
-        <h1 className="font-display font-bold text-cream text-5xl md:text-6xl mb-6 leading-tight">
-          Research<br /><span style={{ color: "#C8A96E" }}>Partnerships.</span>
-        </h1>
-        <p className="text-platinum/65 text-lg leading-relaxed max-w-2xl mb-8">
-          ECADEL LABS collaborates with universities, research institutions, development banks, and governments to advance African intelligence infrastructure research.
-        </p>
-        <Link href="/contact?type=partnership"
-          className="inline-flex items-center gap-2 text-sm text-gold border-b border-gold/35 pb-0.5 hover:border-gold transition-all">
-          Become a partner <ArrowRight size={13} />
-        </Link>
+    <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>
+      {/* ── Page header ─────────────────────────────────────────────────── */}
+      <div style={{ borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
+        <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"7rem 1.5rem 3rem" }}>
+          <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,169,110,0.7)", fontFamily:"monospace", marginBottom:"0.875rem" }}>
+            Institutional Partners
+          </p>
+          <h1 style={{ fontSize:"clamp(1.8rem,2.5vw,2.5rem)", fontWeight:700, color:"#F0EDE6", lineHeight:1.1, fontFamily:"var(--font-display)", marginBottom:"1.125rem" }}>
+            Research Partnerships.
+          </h1>
+          <p style={{ color:"rgba(200,196,190,0.62)", maxWidth:"42rem", lineHeight:1.75, fontSize:"0.9375rem", marginBottom:"1.5rem" }}>
+            ECADEL LABS collaborates with universities, research institutions, development banks, and governments to advance African intelligence infrastructure research.
+          </p>
+          <Link href="/contact?type=partnership" style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", fontSize:"0.8125rem", color:"rgba(200,169,110,0.8)", textDecoration:"none", borderBottom:"1px solid rgba(200,169,110,0.3)", paddingBottom:"2px" }}>
+            Become a partner <ArrowRight size={13} />
+          </Link>
+        </div>
       </div>
 
-      {partners.length === 0 ? (
-        <div className="text-center py-24 text-platinum/38 text-sm">Partnerships coming soon.</div>
-      ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {partners.map((p) => (
-            <div key={p.id} className="bg-carbon border border-white/7 p-7 hover:border-gold/20 transition-all duration-300">
-              <div className="flex items-start justify-between mb-4">
-                <span className="text-[9px] bg-white/5 text-platinum/42 px-2 py-1 rounded-sm font-mono">
-                  {TYPE_LABELS[p.type] ?? p.type}
-                </span>
-                <span className="text-[10px] text-muted font-mono">{p.country}</span>
-              </div>
-              <h3 className="font-display font-semibold text-cream text-lg mb-3">{p.institution}</h3>
-              <p className="text-platinum/55 text-sm leading-relaxed mb-4 line-clamp-3">{p.description}</p>
-              {p.website && (
-                <a href={p.website} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-[10px] text-platinum/38 hover:text-gold transition-colors">
-                  <Globe size={10} /> Website ↗
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      {/* ── Partner grid ────────────────────────────────────────────────── */}
+      <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"3rem 1.5rem 5rem" }}>
+        {partners.length === 0 ? (
+          <div style={{ textAlign:"center", padding:"5rem 0", color:"rgba(200,196,190,0.35)", fontSize:"0.875rem" }}>
+            Partnerships coming soon.
+          </div>
+        ) : (
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1px", backgroundColor:"rgba(255,255,255,0.06)", marginBottom:"3rem" }}>
+            {partners.map((p) => (
+              <div key={p.id} style={{ backgroundColor:"#060608", padding:"2rem" }}>
+                {/* Type + country */}
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.25rem" }}>
+                  <span style={{ fontSize:"9px", padding:"2px 7px", fontFamily:"monospace", backgroundColor:"rgba(255,255,255,0.05)", color:"rgba(200,196,190,0.42)" }}>
+                    {TYPE_LABELS[p.type] ?? p.type}
+                  </span>
+                  <span style={{ fontSize:"9px", color:"rgba(200,196,190,0.35)", fontFamily:"monospace" }}>{p.country}</span>
+                </div>
 
-      {/* CTA */}
-      <div className="mt-16 border border-white/10 p-10 text-center">
-        <h2 className="font-display font-bold text-cream text-3xl mb-4">Research With Us</h2>
-        <p className="text-platinum/60 text-sm max-w-xl mx-auto mb-8 leading-relaxed">
-          Universities, research bodies, and institutions that share our commitment to African technology infrastructure are welcome to reach out about formal research partnerships.
-        </p>
-        <Link href="/contact?type=partnership"
-          className="inline-flex items-center gap-2 px-8 py-4 bg-gold text-obsidian font-display font-semibold text-sm hover:bg-gold-dim transition-colors">
-          Partnership Inquiry <ArrowRight size={14} />
-        </Link>
+                {/* Name */}
+                <h3 style={{ fontSize:"1rem", fontWeight:600, color:"#F0EDE6", fontFamily:"var(--font-display)", marginBottom:"0.75rem" }}>{p.institution}</h3>
+
+                {/* Description */}
+                <p style={{ color:"rgba(200,196,190,0.52)", fontSize:"0.8125rem", lineHeight:1.7, marginBottom:"1.25rem", overflow:"hidden", display:"-webkit-box", WebkitLineClamp:3, WebkitBoxOrient:"vertical" }}>
+                  {p.description}
+                </p>
+
+                {/* Website */}
+                {p.website && (
+                  <a href={p.website} target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:"0.375rem", fontSize:"10px", color:"rgba(200,196,190,0.38)", textDecoration:"none" }}>
+                    <Globe size={10} /> Website ↗
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* CTA */}
+        <div style={{ padding:"3rem", backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", textAlign:"center" }}>
+          <h2 style={{ fontSize:"clamp(1.4rem,2vw,1.75rem)", fontWeight:700, color:"#F0EDE6", fontFamily:"var(--font-display)", marginBottom:"0.875rem" }}>
+            Research With Us
+          </h2>
+          <p style={{ color:"rgba(200,196,190,0.55)", fontSize:"0.875rem", lineHeight:1.7, maxWidth:"30rem", margin:"0 auto 1.75rem" }}>
+            Universities, research bodies, and institutions that share our commitment to African technology infrastructure are welcome to reach out about formal research partnerships.
+          </p>
+          <Link href="/contact?type=partnership" style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.8rem 2rem", backgroundColor:"#C8A96E", color:"#060608", fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.8125rem", textDecoration:"none" }}>
+            Partnership Inquiry <ArrowRight size={14} />
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,72 +1,96 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import { FileText, Download, ChevronRight } from "lucide-react";
+import { Download, ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-const CAT_LABELS: Record<string, string> = {
-  "white-paper": "White Paper", "research-note": "Research Note",
-  "technical-report": "Technical Report", "position-paper": "Position Paper",
+const CAT_LABELS: Record<string,string> = {
+  "white-paper":"White Paper","research-note":"Research Note",
+  "technical-report":"Technical Report","position-paper":"Position Paper",
 };
 
 export default async function PublicationsPage() {
   const pubs = await prisma.publication.findMany({
-    where: { published: true },
-    orderBy: [{ featured: "desc" }, { publishedAt: "desc" }],
+    where: { published:true },
+    orderBy: [{ featured:"desc" },{ publishedAt:"desc" }],
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-20">
-      <div className="mb-16">
-        <div className="text-[9px] tracking-[0.35em] uppercase text-gold/70 font-mono mb-4 flex items-center gap-2">
-          <FileText size={11} className="text-gold" /> Publications
+    <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>
+      {/* ── Page header ─────────────────────────────────────────────────── */}
+      <div style={{ borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
+        <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"7rem 1.5rem 3rem" }}>
+          <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,169,110,0.7)", fontFamily:"monospace", marginBottom:"0.875rem" }}>
+            Publications
+          </p>
+          <h1 style={{ fontSize:"clamp(1.8rem,2.5vw,2.5rem)", fontWeight:700, color:"#F0EDE6", lineHeight:1.1, fontFamily:"var(--font-display)", marginBottom:"1.125rem" }}>
+            Research Publications.
+          </h1>
+          <p style={{ color:"rgba(200,196,190,0.62)", maxWidth:"42rem", lineHeight:1.75, fontSize:"0.9375rem" }}>
+            White papers, research notes, technical reports, and position papers — the written output of ECADEL LABS&apos; work on African intelligence infrastructure.
+          </p>
         </div>
-        <h1 className="font-display font-bold text-cream text-5xl md:text-6xl mb-6 leading-tight">
-          Research<br /><span style={{ color: "#C8A96E" }}>Publications.</span>
-        </h1>
-        <p className="text-platinum/65 text-lg leading-relaxed max-w-2xl">
-          White papers, research notes, technical reports, and position papers — the written output of ECADEL LABS&apos; work on African intelligence infrastructure.
-        </p>
       </div>
 
-      {pubs.length === 0 ? (
-        <div className="text-center py-24 text-platinum/38 text-sm">Publications coming soon.</div>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-px bg-white/5">
-          {pubs.map((pub) => {
-            const authors = JSON.parse(pub.authors) as string[];
-            const tags    = JSON.parse(pub.tags)    as string[];
-            return (
-              <Link key={pub.id} href={`/publications/${pub.slug}`}
-                className="group bg-carbon p-8 hover:bg-graphite transition-all duration-300">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[9px] bg-white/5 text-platinum/42 px-2 py-1 font-mono rounded-sm">
-                    {CAT_LABELS[pub.category] ?? pub.category}
-                  </span>
-                  {pub.pdfUrl && <Download size={12} className="text-platinum/30 group-hover:text-gold transition-colors" />}
-                </div>
-                <h2 className="font-display font-bold text-cream text-lg mb-3 leading-snug group-hover:text-gold/90 transition-colors line-clamp-2">
-                  {pub.title}
-                </h2>
-                <p className="text-platinum/55 text-sm leading-relaxed mb-5 line-clamp-3">{pub.abstract}</p>
-                {authors.length > 0 && (
-                  <div className="text-[10px] text-platinum/38 font-mono mb-4">{authors.join(", ")}</div>
-                )}
-                {tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {tags.slice(0,3).map((t) => (
-                      <span key={t} className="text-[9px] text-platinum/35 bg-white/4 px-1.5 py-0.5 rounded-sm">{t}</span>
-                    ))}
+      {/* ── Publication list ─────────────────────────────────────────────── */}
+      <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"2.5rem 1.5rem 5rem" }}>
+        {pubs.length === 0 ? (
+          <div style={{ textAlign:"center", padding:"5rem 0", color:"rgba(200,196,190,0.35)", fontSize:"0.875rem" }}>
+            Publications coming soon.
+          </div>
+        ) : (
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"1px", backgroundColor:"rgba(255,255,255,0.06)" }}>
+            {pubs.map((pub) => {
+              const authors = JSON.parse(pub.authors) as string[];
+              const tags    = JSON.parse(pub.tags) as string[];
+              return (
+                <Link
+                  key={pub.id}
+                  href={`/publications/${pub.slug}`}
+                  style={{ backgroundColor:"#060608", padding:"2rem", textDecoration:"none", display:"flex", flexDirection:"column", gap:"1rem", borderTop:"2px solid transparent", transition:"all 0.2s" }}
+                  className="hover:bg-deep hover:border-t-gold group"
+                >
+                  {/* Category + PDF */}
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                    <span style={{ fontSize:"9px", padding:"3px 8px", fontFamily:"monospace", backgroundColor:"rgba(255,255,255,0.05)", color:"rgba(200,196,190,0.45)" }}>
+                      {CAT_LABELS[pub.category] ?? pub.category}
+                    </span>
+                    {pub.pdfUrl && <Download size={12} color="rgba(200,196,190,0.3)" />}
                   </div>
-                )}
-                <div className="flex items-center gap-1 text-xs text-gold/60 group-hover:text-gold transition-colors mt-2">
-                  Read <ChevronRight size={12} />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      )}
+
+                  {/* Title */}
+                  <h2 style={{ fontSize:"1rem", fontWeight:600, color:"#F0EDE6", lineHeight:1.4, fontFamily:"var(--font-display)" }} className="group-hover:text-gold-80 transition-colors">
+                    {pub.title}
+                  </h2>
+
+                  {/* Abstract */}
+                  <p style={{ color:"rgba(200,196,190,0.5)", fontSize:"0.8125rem", lineHeight:1.7, flex:1, overflow:"hidden", display:"-webkit-box", WebkitLineClamp:3, WebkitBoxOrient:"vertical" }}>
+                    {pub.abstract}
+                  </p>
+
+                  {/* Authors */}
+                  {authors.length > 0 && (
+                    <p style={{ fontSize:"10px", fontFamily:"monospace", color:"rgba(200,196,190,0.35)" }}>{authors.join(", ")}</p>
+                  )}
+
+                  {/* Tags */}
+                  {tags.length > 0 && (
+                    <div style={{ display:"flex", flexWrap:"wrap", gap:"0.375rem" }}>
+                      {tags.slice(0,4).map((t) => (
+                        <span key={t} style={{ fontSize:"9px", padding:"2px 7px", backgroundColor:"rgba(200,169,110,0.06)", color:"rgba(200,169,110,0.5)", fontFamily:"monospace" }}>{t}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  <span style={{ fontSize:"0.75rem", color:"rgba(200,169,110,0.65)", display:"flex", alignItems:"center", gap:"0.25rem" }}>
+                    Read <ArrowRight size={12} />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
