@@ -1,6 +1,12 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Fellowship Program",
+  description: "ECADEL LABS trains engineers, researchers and systems thinkers who will build Africa's intelligence infrastructure. Apply for a fellowship.",
+};
 
 export const dynamic = "force-dynamic";
 

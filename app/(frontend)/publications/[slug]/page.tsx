@@ -3,6 +3,17 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Download } from "lucide-react";
 import { marked } from "marked";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug:string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const pub = await prisma.publication.findFirst({ where:{ slug, published:true } });
+  if (!pub) return { title:"Publication" };
+  return {
+    title: pub.title,
+    description: pub.abstract.slice(0, 160),
+  };
+}
 
 const CAT_LABELS: Record<string,string> = {
   "white-paper":"White Paper","research-note":"Research Note",

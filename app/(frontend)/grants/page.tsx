@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Research Funding & Grants",
+  description: "ECADEL LABS actively pursues research funding from AfDB, Gates Foundation, USAID, EU Horizon, and World Bank IFC. Our grant strategy for African intelligence infrastructure.",
+};
 
 const GRANT_BODIES = [
   { name:"African Development Bank", short:"AfDB", type:"Development Finance", description:"The continent's premier development finance institution. ECADEL LABS' research on African financial data infrastructure and governance intelligence aligns directly with AfDB's digitisation and AI-for-Africa mandates.", focus:["Financial Infrastructure","Governance Technology","Digital Transformation"], url:"https://www.afdb.org" },

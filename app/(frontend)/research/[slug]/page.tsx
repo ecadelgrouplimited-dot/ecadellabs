@@ -2,6 +2,17 @@ import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug:string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const p = await prisma.researchProject.findFirst({ where:{ slug, published:true } });
+  if (!p) return { title:"Research Project" };
+  return {
+    title: p.title,
+    description: p.problem.slice(0, 160),
+  };
+}
 
 const STATUS_COLOR: Record<string,string> = { active:"#4ab478", completed:"#5B8FBF", planned:"#D4A24C" };
 
