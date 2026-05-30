@@ -21,8 +21,8 @@ npm install --production=false
 echo "› Generating Prisma client..."
 npx prisma generate
 
-echo "› Running database migrations..."
-npx prisma migrate deploy
+echo "› Syncing database schema..."
+npx prisma db push --accept-data-loss
 
 echo "› Building Next.js app..."
 npm run build
