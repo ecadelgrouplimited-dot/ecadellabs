@@ -42,7 +42,7 @@ export default async function PartnershipsPage() {
             Partnerships coming soon.
           </div>
         ) : (
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1px", backgroundColor:"rgba(255,255,255,0.06)", marginBottom:"3rem" }}>
+          <div className="partner-grid" style={{ backgroundColor:"rgba(255,255,255,0.06)", marginBottom:"3rem" }}>
             {partners.map((p) => (
               <div key={p.id} style={{ backgroundColor:"#060608", padding:"2rem" }}>
                 {/* Type + country */}

@@ -60,7 +60,7 @@ export default async function FellowsPage() {
             <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,196,190,0.35)", fontFamily:"monospace", marginBottom:"1.5rem" }}>
               Current Fellows &amp; Researchers
             </p>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1px", backgroundColor:"rgba(255,255,255,0.06)", marginBottom:"3rem" }}>
+            <div className="fellows-grid" style={{ backgroundColor:"rgba(255,255,255,0.06)", marginBottom:"3rem" }}>
               {fellows.map((f) => {
                 const expertise = JSON.parse(f.expertise) as string[];
                 const initials  = f.name.split(" ").map((n) => n[0]).join("").slice(0,2);

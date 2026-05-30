@@ -564,22 +564,24 @@ cd /var/www/ecadellabs && ./deploy.sh
 ## 14. Phase Plan
 
 ### Phase 1 — Foundation (Now)
-- [ ] Initialize Next.js 15 project
-- [ ] Set up Prisma + SQLite schema
-- [ ] Admin authentication (middleware + login page)
-- [ ] Admin dashboard + CRUD for all content types
-- [ ] Seed database with initial content
-- [ ] Basic frontend pages (Home, Research, Publications)
-- [ ] Contact form with email
-- [ ] Deploy to VPS (port 3001)
-- [ ] DNS + SSL for ecadellabs.cloud
+- [x] Initialize Next.js 16 project
+- [x] Set up Prisma + SQLite schema (Prisma 7, better-sqlite3 adapter)
+- [x] Admin authentication (proxy.ts JWT middleware + login page)
+- [x] Admin dashboard + CRUD for all content types
+- [x] Seed database with initial content (3 projects, 2 publications, 2 partners, 1 fellow)
+- [x] Frontend pages (Home, Research, Publications, Fellows, Grants, Partners, Contact)
+- [x] Contact form with email (Nodemailer + Hostinger SMTP)
+- [x] Deploy to VPS (port 3001, PM2 process: ecadellabs)
+- [x] DNS + SSL for ecadellabs.cloud (Let's Encrypt, auto-renews 2026-08-28)
 
 ### Phase 2 — Content & Credibility
-- [ ] First real publication written and published
-- [ ] First real research project documented
-- [ ] Fellowship program page launched with application form
-- [ ] University partnership outreach begins
-- [ ] Grant body target pages added
+- [x] Fellowship program page launched (ecadellabs.cloud/fellows)
+- [x] Grant body target pages (ecadellabs.cloud/grants — AfDB, Gates, USAID, EU Horizon, IFC)
+- [x] Research agenda published (3 active/planned projects live)
+- [x] First two publications live (research note + position paper)
+- [ ] First external fellow onboarded
+- [ ] First university partnership formalised (Makerere target)
+- [ ] First grant application submitted
 
 ### Phase 3 — Authority
 - [ ] Second and third publications

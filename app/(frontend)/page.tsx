@@ -68,7 +68,7 @@ export default async function HomePage() {
               </div>
 
               {/* Stats */}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"1px", backgroundColor:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.06)", maxWidth:"32rem" }}>
+              <div className="stats-grid" style={{ backgroundColor:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.06)", maxWidth:"36rem" }}>
                 {[
                   { v:DOMAINS.length.toString(), l:"Research Domains" },
                   { v:`${projects.length}+`, l:"Active Projects" },
@@ -96,7 +96,7 @@ export default async function HomePage() {
       {/* ── FEATURED CONTENT ────────────────────────────────────────────── */}
       <section style={{ borderTop:"1px solid rgba(255,255,255,0.07)", backgroundColor:"#0A0C12" }}>
         <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"4rem 1.5rem" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1px", backgroundColor:"rgba(255,255,255,0.07)" }}>
+          <div className="pub-grid" style={{ backgroundColor:"rgba(255,255,255,0.07)" }}>
 
             {/* Featured research */}
             <div style={{ backgroundColor:"#0A0C12", padding:"2.5rem" }}>

@@ -41,7 +41,7 @@ export default function GrantsPage() {
         {/* Why Fund section */}
         <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", padding:"2.5rem", marginBottom:"3rem" }}>
           <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,169,110,0.7)", fontFamily:"monospace", marginBottom:"1.5rem" }}>Why Fund ECADEL LABS</p>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.875rem" }}>
+          <div className="grants-grid">
             {STRENGTHS.map((s) => (
               <div key={s} style={{ display:"flex", alignItems:"flex-start", gap:"0.625rem" }}>
                 <CheckCircle2 size={13} color="rgba(200,169,110,0.65)" style={{ flexShrink:0, marginTop:"1px" }} />

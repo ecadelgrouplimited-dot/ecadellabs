@@ -39,7 +39,7 @@ export default async function PublicationsPage() {
             Publications coming soon.
           </div>
         ) : (
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:"1px", backgroundColor:"rgba(255,255,255,0.06)" }}>
+          <div className="pub-grid" style={{ backgroundColor:"rgba(255,255,255,0.06)" }}>
             {pubs.map((pub) => {
               const authors = JSON.parse(pub.authors) as string[];
               const tags    = JSON.parse(pub.tags) as string[];

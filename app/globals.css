@@ -141,3 +141,73 @@ body {
 .prose ul,.prose ol { padding-left: 1.5rem; margin-bottom: 1.2rem; }
 .prose li { margin-bottom: 0.4rem; }
 .prose hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 2rem 0; }
+
+/* ── Responsive layout utilities (not relying on Tailwind scanning) ────── */
+.nav-links    { display: none; align-items: center; gap: 1.75rem; }
+.nav-actions  { display: none; align-items: center; gap: 1rem; }
+.nav-burger   { display: flex; }
+.mobile-menu  { display: block; }
+
+.footer-grid  { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
+.contact-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; }
+.fellows-grid { display: grid; grid-template-columns: 1fr; gap: 1px; }
+.pub-grid     { display: grid; grid-template-columns: 1fr; gap: 1px; }
+.partner-grid { display: grid; grid-template-columns: 1fr; gap: 1px; }
+.grants-grid  { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+.stats-grid   { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; }
+
+@media (min-width: 640px) {
+  .stats-grid   { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 768px) {
+  .nav-links    { display: flex; }
+  .nav-actions  { display: flex; }
+  .nav-burger   { display: none; }
+  .mobile-menu  { display: none !important; }
+  .footer-grid  { grid-template-columns: 2fr 1fr 1fr; }
+  .contact-grid { grid-template-columns: 1fr 2fr; }
+  .fellows-grid { grid-template-columns: 1fr 1fr; }
+  .pub-grid     { grid-template-columns: 1fr 1fr; }
+  .partner-grid { grid-template-columns: 1fr 1fr; }
+  .grants-grid  { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1024px) {
+  .fellows-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .partner-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* ── Nav link active underline ─────────────────────────────────────────── */
+.nav-link {
+  font-size: 0.875rem;
+  color: rgba(200,196,190,0.62);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 1px;
+  background: #C8A96E;
+  transform: scaleX(0);
+  transition: transform 0.25s;
+}
+.nav-link:hover { color: #F0EDE6; }
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link.active { color: #C8A96E; }
+.nav-link.active::after { transform: scaleX(1); }
+
+.footer-link {
+  font-size: 0.8125rem;
+  color: rgba(200,196,190,0.52);
+  text-decoration: none;
+  display: block;
+  line-height: 1;
+  padding: 0.3rem 0;
+  transition: color 0.2s;
+}
+.footer-link:hover { color: #F0EDE6; }

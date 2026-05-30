@@ -114,7 +114,7 @@ export default function ContactPage() {
       </div>
 
       <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"3.5rem 1.5rem 5rem" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 2fr", gap:"4rem" }}>
+        <div className="contact-grid">
           <div style={{ display:"flex", flexDirection:"column", gap:"2rem" }}>
             {[
               { label:"Research Inquiries",     value:"ecadel@ecadelgroup.com" },
