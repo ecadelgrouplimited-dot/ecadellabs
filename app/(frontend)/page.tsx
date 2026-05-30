@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import { ArrowRight, FileText, FlaskConical, Beaker, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, FileText, FlaskConical, ChevronRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -22,10 +23,9 @@ const DOMAINS = [
 ];
 
 export default async function HomePage() {
-  const [featuredPub, featuredProject, recentPubs, recentProjects, fellows] = await Promise.all([
+  const [featuredPub, featuredProject, recentProjects, fellows] = await Promise.all([
     prisma.publication.findFirst({ where: { published: true, featured: true }, orderBy: { publishedAt: "desc" } }),
     prisma.researchProject.findFirst({ where: { published: true, featured: true } }),
-    prisma.publication.findMany({ where: { published: true }, orderBy: { publishedAt: "desc" }, take: 3 }),
     prisma.researchProject.findMany({ where: { published: true }, orderBy: { createdAt: "desc" }, take: 3 }),
     prisma.fellow.count({ where: { active: true } }),
   ]);
@@ -41,81 +41,94 @@ export default async function HomePage() {
   return (
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] flex flex-col justify-end px-6 pb-20 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col justify-center px-6 overflow-hidden">
         {/* Background grid */}
-        <div className="absolute inset-0 bg-grid opacity-40" />
-        {/* Radial glow */}
+        <div className="absolute inset-0 bg-grid opacity-[0.35]" />
+        {/* Radial glow — shifted right to complement the logo mark */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 70% 60% at 50% 80%, rgba(200,169,110,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse 65% 65% at 75% 52%, rgba(200,169,110,0.07) 0%, transparent 65%)",
         }} />
-        {/* Ghost text */}
-        <div className="absolute bottom-0 right-0 select-none pointer-events-none font-display font-black leading-none opacity-[0.035]"
-          style={{ fontSize: "clamp(80px,18vw,220px)", color: "#C8A96E", letterSpacing: "-0.04em" }}>
-          LABS
-        </div>
+        {/* Subtle top fade for navbar */}
+        <div className="absolute top-0 left-0 right-0 h-24 pointer-events-none"
+          style={{ background: "linear-gradient(to bottom, rgba(6,6,8,0.5), transparent)" }} />
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full">
-          <div className="flex items-center gap-2 mb-8">
-            <Beaker size={14} className="text-gold" />
-            <span className="text-[10px] tracking-[0.35em] uppercase text-gold font-mono">
-              ECADEL LABS · ecadellabs.cloud
-            </span>
-          </div>
-
-          <h1 className="font-display font-bold text-cream leading-tight mb-6"
-            style={{ fontSize: "clamp(2.8rem,6vw,5.5rem)" }}>
-            Research &amp; Innovation<br />
-            <span style={{ color: "#C8A96E" }}>Engine for Africa.</span>
-          </h1>
-
-          <p className="text-platinum/72 text-lg leading-relaxed max-w-2xl mb-10">
-            The research and innovation engine of ECADEL GROUP LIMITED — advancing African intelligence infrastructure through original research, academic partnerships, and applied technology for the continent.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <Link href="/research"
-              className="flex items-center gap-2 px-6 py-3.5 bg-gold text-obsidian font-display font-semibold text-sm hover:bg-gold-dim transition-colors">
-              View Research Agenda
-              <ArrowRight size={15} />
-            </Link>
-            <Link href="/publications"
-              className="flex items-center gap-2 px-6 py-3.5 border border-white/12 text-platinum/72 text-sm hover:text-cream hover:border-white/20 transition-all">
-              Read Publications
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats ────────────────────────────────────────────────────────────── */}
-      <section className="border-y border-white/7 bg-deep">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/7">
-          {[
-            { value: DOMAINS.length.toString(),  label: "Research Domains" },
-            { value: `${recentProjects.length}+`, label: "Active Projects" },
-            { value: `${fellows || "—"}`,         label: "Active Fellows" },
-            { value: `${GRANT_BODIES.length}`,    label: "Target Grant Bodies" },
-          ].map((s) => (
-            <div key={s.label} className="px-8 py-8 text-center">
-              <div className="font-display font-black text-4xl mb-1" style={{ color: "#C8A96E" }}>{s.value}</div>
-              <div className="text-xs text-platinum/50 tracking-wide">{s.label}</div>
+        <div className="relative z-10 max-w-7xl mx-auto w-full py-24 grid lg:grid-cols-[1fr_380px] gap-16 items-center">
+          {/* Left — content */}
+          <div>
+            {/* Label */}
+            <div className="flex items-center gap-3 mb-10">
+              <div className="w-8 h-px bg-gold/50" />
+              <span className="text-[10px] tracking-[0.4em] uppercase text-gold/80 font-mono">
+                ECADEL LABS · ecadellabs.cloud
+              </span>
             </div>
-          ))}
+
+            <h1 className="font-display font-bold text-cream leading-[1.06] mb-6"
+              style={{ fontSize: "clamp(2.6rem,4.8vw,4.6rem)" }}>
+              Research &amp; Innovation<br />
+              <span style={{ color: "#C8A96E" }}>Engine for Africa.</span>
+            </h1>
+
+            <p className="text-platinum/65 text-lg leading-relaxed max-w-xl mb-10">
+              The research and innovation engine of ECADEL GROUP LIMITED — advancing African intelligence infrastructure through original research, academic partnerships, and applied technology for the continent.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 mb-14">
+              <Link href="/research"
+                className="flex items-center gap-2 px-7 py-3.5 bg-gold text-obsidian font-display font-semibold text-sm hover:bg-gold-dim transition-colors">
+                View Research Agenda
+                <ArrowRight size={15} />
+              </Link>
+              <Link href="/publications"
+                className="flex items-center gap-2 px-7 py-3.5 border border-white/12 text-platinum/72 text-sm hover:text-cream hover:border-white/20 transition-all">
+                Read Publications
+              </Link>
+            </div>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-white/6 border border-white/6">
+              {[
+                { value: DOMAINS.length.toString(),  label: "Research Domains" },
+                { value: `${recentProjects.length}+`, label: "Active Projects" },
+                { value: `${fellows || "1"}`,          label: "Active Fellows" },
+                { value: `${GRANT_BODIES.length}`,    label: "Target Grant Bodies" },
+              ].map((s) => (
+                <div key={s.label} className="bg-obsidian px-5 py-5 text-center">
+                  <div className="font-display font-black text-2xl mb-0.5" style={{ color: "#C8A96E" }}>{s.value}</div>
+                  <div className="text-[10px] text-platinum/45 tracking-wide">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — logo mark */}
+          <div className="hidden lg:flex items-center justify-center">
+            <div className="relative w-72 h-72 lg:w-80 lg:h-80">
+              <Image
+                src="/logos/ecadel_labs_transparent_1600.png"
+                alt="ECADEL LABS"
+                fill
+                className="object-contain opacity-[0.32]"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ── Featured content ─────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="grid lg:grid-cols-2 gap-8">
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="grid lg:grid-cols-2 gap-6">
 
           {/* Featured research project */}
           <div>
-            <div className="text-[9px] tracking-[0.3em] uppercase text-gold/70 font-mono mb-6 flex items-center gap-2">
+            <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] uppercase text-gold/70 font-mono mb-5">
               <FlaskConical size={11} className="text-gold" />
               Featured Research
             </div>
             {featuredProject ? (
               <Link href={`/research/${featuredProject.slug}`}
-                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300">
+                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300 h-[calc(100%-2rem)]">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-[9px] px-2 py-1 rounded-sm font-mono"
                     style={{ background: `${STATUS_COLORS[featuredProject.status]}15`, color: STATUS_COLORS[featuredProject.status] }}>
@@ -139,13 +152,13 @@ export default async function HomePage() {
 
           {/* Featured publication */}
           <div>
-            <div className="text-[9px] tracking-[0.3em] uppercase text-gold/70 font-mono mb-6 flex items-center gap-2">
+            <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] uppercase text-gold/70 font-mono mb-5">
               <FileText size={11} className="text-gold" />
               Latest Publication
             </div>
             {featuredPub ? (
               <Link href={`/publications/${featuredPub.slug}`}
-                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300">
+                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300 h-[calc(100%-2rem)]">
                 <span className="text-[9px] text-platinum/42 bg-white/5 px-2 py-1 font-mono rounded-sm mb-4 inline-block">
                   {CAT_LABELS[featuredPub.category] ?? featuredPub.category}
                 </span>

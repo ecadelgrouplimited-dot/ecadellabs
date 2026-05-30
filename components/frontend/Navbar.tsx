@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Beaker, Menu, X, ExternalLink } from "lucide-react";
+import { Menu, X, ExternalLink } from "lucide-react";
 
 const links = [
   { href: "/research",      label: "Research" },
@@ -21,14 +22,20 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/7 bg-deep/90 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <Beaker size={17} className="text-gold" />
+        <Link href="/" className="flex items-center gap-3 group">
+          <Image
+            src="/logos/ecadel_labs_transparent_1600.png"
+            alt="ECADEL LABS"
+            width={40}
+            height={40}
+            className="opacity-90 group-hover:opacity-100 transition-opacity"
+          />
           <div>
-            <span className="font-display font-bold text-cream text-sm tracking-wide">
+            <span className="font-display font-bold text-cream text-sm tracking-wide leading-none">
               ECADEL <span className="text-gold">LABS</span>
             </span>
-            <div className="text-[8px] tracking-[0.2em] uppercase text-platinum/38 font-mono -mt-0.5">
-              Research & Innovation
+            <div className="text-[8px] tracking-[0.2em] uppercase text-platinum/38 font-mono mt-0.5">
+              Research &amp; Innovation
             </div>
           </div>
         </Link>

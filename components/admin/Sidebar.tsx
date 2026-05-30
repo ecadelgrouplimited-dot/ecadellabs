@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, FileText, FlaskConical, Users, Building2,
-  MessageSquare, Settings, LogOut, ChevronRight, Beaker,
+  MessageSquare, Settings, LogOut, ChevronRight,
 } from "lucide-react";
 
 const navItems = [
@@ -28,14 +29,20 @@ export default function Sidebar() {
   return (
     <aside className="w-60 min-h-screen flex flex-col bg-deep border-r border-white/7">
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-white/7">
-        <Link href="/" className="flex items-center gap-2 group" target="_blank">
-          <Beaker size={16} className="text-gold" />
+      <div className="px-5 py-4 border-b border-white/7">
+        <Link href="/" className="flex items-center gap-2.5 group" target="_blank">
+          <Image
+            src="/logos/ecadel_labs_transparent_1600.png"
+            alt="ECADEL LABS"
+            width={36}
+            height={36}
+            className="opacity-85 group-hover:opacity-100 transition-opacity"
+          />
           <div>
-            <div className="text-cream font-display font-bold text-sm tracking-wide">
+            <div className="text-cream font-display font-bold text-sm tracking-wide leading-none">
               ECADEL <span className="text-gold">LABS</span>
             </div>
-            <div className="text-platinum/50 text-[9px] tracking-[0.18em] uppercase font-mono">
+            <div className="text-platinum/45 text-[9px] tracking-[0.18em] uppercase font-mono mt-0.5">
               Admin Panel
             </div>
           </div>

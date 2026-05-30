@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Beaker, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -8,11 +9,22 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <Beaker size={16} className="text-gold" />
-              <span className="font-display font-bold text-cream text-sm tracking-wide">
-                ECADEL <span className="text-gold">LABS</span>
-              </span>
+            <div className="flex items-center gap-3 mb-5">
+              <Image
+                src="/logos/ecadel_labs_transparent_1600.png"
+                alt="ECADEL LABS"
+                width={48}
+                height={48}
+                className="opacity-85"
+              />
+              <div>
+                <div className="font-display font-bold text-cream text-base tracking-wide leading-none">
+                  ECADEL <span className="text-gold">LABS</span>
+                </div>
+                <div className="text-[9px] tracking-[0.2em] uppercase text-platinum/38 font-mono mt-1">
+                  Research &amp; Innovation Engine
+                </div>
+              </div>
             </div>
             <p className="text-platinum/55 text-sm leading-relaxed max-w-sm mb-4">
               The research and innovation engine of ECADEL GROUP LIMITED — advancing African intelligence infrastructure through original research and applied technology.
