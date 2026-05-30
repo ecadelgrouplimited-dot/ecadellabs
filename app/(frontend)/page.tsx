@@ -22,96 +22,156 @@ const DOMAINS = [
   "Road Safety Infrastructure",
 ];
 
+const STATS = [
+  { value: "6",  label: "Research Domains" },
+  { value: "3+", label: "Active Projects" },
+  { value: "1",  label: "Active Fellows" },
+  { value: "5",  label: "Target Grant Bodies" },
+];
+
+const STATUS_COLORS: Record<string, string> = {
+  active: "#4ab478", completed: "#5B8FBF", planned: "#D4A24C",
+};
+
+const CAT_LABELS: Record<string, string> = {
+  "white-paper": "White Paper", "research-note": "Research Note",
+  "technical-report": "Technical Report", "position-paper": "Position Paper",
+};
+
 export default async function HomePage() {
-  const [featuredPub, featuredProject, recentProjects, fellows] = await Promise.all([
+  const [featuredPub, featuredProject] = await Promise.all([
     prisma.publication.findFirst({ where: { published: true, featured: true }, orderBy: { publishedAt: "desc" } }),
     prisma.researchProject.findFirst({ where: { published: true, featured: true } }),
-    prisma.researchProject.findMany({ where: { published: true }, orderBy: { createdAt: "desc" }, take: 3 }),
-    prisma.fellow.count({ where: { active: true } }),
   ]);
-
-  const CAT_LABELS: Record<string, string> = {
-    "white-paper": "White Paper", "research-note": "Research Note",
-    "technical-report": "Technical Report", "position-paper": "Position Paper",
-  };
-  const STATUS_COLORS: Record<string, string> = {
-    active: "#4ab478", completed: "#5B8FBF", planned: "#D4A24C",
-  };
 
   return (
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-center px-6 overflow-hidden">
+      <section
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          backgroundColor: "#060608",
+          paddingTop: "10rem",
+          paddingBottom: "7rem",
+          paddingLeft: "1.5rem",
+          paddingRight: "1.5rem",
+        }}
+      >
         {/* Background grid */}
-        <div className="absolute inset-0 bg-grid opacity-[0.35]" />
-        {/* Radial glow — shifted right to complement the logo mark */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 65% 65% at 75% 52%, rgba(200,169,110,0.07) 0%, transparent 65%)",
-        }} />
-        {/* Subtle top fade for navbar */}
-        <div className="absolute top-0 left-0 right-0 h-24 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, rgba(6,6,8,0.5), transparent)" }} />
+        <div className="absolute inset-0 bg-grid" style={{ opacity: 0.35, pointerEvents: "none" }} />
+        {/* Radial glow */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(ellipse 70% 60% at 70% 50%, rgba(200,169,110,0.07) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full py-24 grid lg:grid-cols-[1fr_380px] gap-16 items-center">
-          {/* Left — content */}
-          <div>
-            {/* Label */}
-            <div className="flex items-center gap-3 mb-10">
-              <div className="w-8 h-px bg-gold/50" />
-              <span className="text-[10px] tracking-[0.4em] uppercase text-gold/80 font-mono">
-                ECADEL LABS · ecadellabs.cloud
-              </span>
+        {/* Content */}
+        <div style={{ position: "relative", zIndex: 10, maxWidth: "80rem", margin: "0 auto" }}>
+          {/* Two-column layout on large screens */}
+          <div style={{ display: "flex", alignItems: "center", gap: "4rem" }}>
+
+            {/* Left column */}
+            <div style={{ flex: "1 1 0", minWidth: 0 }}>
+
+              {/* Label */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "2.5rem" }}>
+                <div style={{ width: "2rem", height: "1px", backgroundColor: "rgba(200,169,110,0.5)" }} />
+                <span style={{
+                  fontSize: "0.625rem", letterSpacing: "0.4em",
+                  textTransform: "uppercase", color: "rgba(200,169,110,0.8)", fontFamily: "monospace",
+                }}>
+                  ECADEL LABS · ecadellabs.cloud
+                </span>
+              </div>
+
+              {/* Heading */}
+              <h1 style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                color: "#F0EDE6",
+                lineHeight: 1.06,
+                fontSize: "clamp(2.8rem, 4.8vw, 4.8rem)",
+                marginBottom: "1.5rem",
+              }}>
+                Research &amp; Innovation<br />
+                <span style={{ color: "#C8A96E" }}>Engine for Africa.</span>
+              </h1>
+
+              {/* Body */}
+              <p style={{
+                color: "rgba(200,196,190,0.65)", fontSize: "1.125rem",
+                lineHeight: 1.7, maxWidth: "34rem", marginBottom: "2.5rem",
+              }}>
+                The research and innovation engine of ECADEL GROUP LIMITED — advancing African intelligence infrastructure through original research, academic partnerships, and applied technology for the continent.
+              </p>
+
+              {/* CTAs */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginBottom: "3.5rem" }}>
+                <Link href="/research" style={{
+                  display: "inline-flex", alignItems: "center", gap: "0.5rem",
+                  padding: "0.875rem 1.75rem",
+                  backgroundColor: "#C8A96E", color: "#060608",
+                  fontFamily: "var(--font-display)", fontWeight: 600, fontSize: "0.875rem",
+                  textDecoration: "none",
+                }}>
+                  View Research Agenda <ArrowRight size={15} />
+                </Link>
+                <Link href="/publications" style={{
+                  display: "inline-flex", alignItems: "center", gap: "0.5rem",
+                  padding: "0.875rem 1.75rem",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  color: "rgba(200,196,190,0.72)", fontSize: "0.875rem",
+                  textDecoration: "none",
+                }}>
+                  Read Publications
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div style={{
+                display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "1px", backgroundColor: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}>
+                {STATS.map((s) => (
+                  <div key={s.label} style={{
+                    backgroundColor: "#060608", padding: "1.25rem 1rem",
+                    textAlign: "center",
+                  }}>
+                    <div style={{
+                      fontFamily: "var(--font-display)", fontWeight: 900,
+                      fontSize: "1.75rem", color: "#C8A96E", marginBottom: "0.25rem",
+                    }}>{s.value}</div>
+                    <div style={{
+                      fontSize: "0.625rem", color: "rgba(200,196,190,0.45)",
+                      letterSpacing: "0.05em", textTransform: "uppercase",
+                    }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <h1 className="font-display font-bold text-cream leading-[1.06] mb-6"
-              style={{ fontSize: "clamp(2.6rem,4.8vw,4.6rem)" }}>
-              Research &amp; Innovation<br />
-              <span style={{ color: "#C8A96E" }}>Engine for Africa.</span>
-            </h1>
-
-            <p className="text-platinum/65 text-lg leading-relaxed max-w-xl mb-10">
-              The research and innovation engine of ECADEL GROUP LIMITED — advancing African intelligence infrastructure through original research, academic partnerships, and applied technology for the continent.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4 mb-14">
-              <Link href="/research"
-                className="flex items-center gap-2 px-7 py-3.5 bg-gold text-obsidian font-display font-semibold text-sm hover:bg-gold-dim transition-colors">
-                View Research Agenda
-                <ArrowRight size={15} />
-              </Link>
-              <Link href="/publications"
-                className="flex items-center gap-2 px-7 py-3.5 border border-white/12 text-platinum/72 text-sm hover:text-cream hover:border-white/20 transition-all">
-                Read Publications
-              </Link>
+            {/* Right column — logo mark (large screens only) */}
+            <div style={{
+              flexShrink: 0, width: "340px", height: "340px",
+              opacity: 0.28, display: "none",
+            }} className="lg:!block">
+              <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                <Image
+                  src="/logos/ecadel_labs_transparent_1600.png"
+                  alt=""
+                  fill
+                  sizes="340px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
             </div>
 
-            {/* Stats row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-white/6 border border-white/6">
-              {[
-                { value: DOMAINS.length.toString(),  label: "Research Domains" },
-                { value: `${recentProjects.length}+`, label: "Active Projects" },
-                { value: `${fellows || "1"}`,          label: "Active Fellows" },
-                { value: `${GRANT_BODIES.length}`,    label: "Target Grant Bodies" },
-              ].map((s) => (
-                <div key={s.label} className="bg-obsidian px-5 py-5 text-center">
-                  <div className="font-display font-black text-2xl mb-0.5" style={{ color: "#C8A96E" }}>{s.value}</div>
-                  <div className="text-[10px] text-platinum/45 tracking-wide">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right — logo mark */}
-          <div className="hidden lg:flex items-center justify-center">
-            <div className="relative w-72 h-72 lg:w-80 lg:h-80">
-              <Image
-                src="/logos/ecadel_labs_transparent_1600.png"
-                alt="ECADEL LABS"
-                fill
-                className="object-contain opacity-[0.32]"
-                priority
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -128,7 +188,7 @@ export default async function HomePage() {
             </div>
             {featuredProject ? (
               <Link href={`/research/${featuredProject.slug}`}
-                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300 h-[calc(100%-2rem)]">
+                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-[9px] px-2 py-1 rounded-sm font-mono"
                     style={{ background: `${STATUS_COLORS[featuredProject.status]}15`, color: STATUS_COLORS[featuredProject.status] }}>
@@ -158,7 +218,7 @@ export default async function HomePage() {
             </div>
             {featuredPub ? (
               <Link href={`/publications/${featuredPub.slug}`}
-                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300 h-[calc(100%-2rem)]">
+                className="group block bg-carbon border border-white/7 p-7 hover:border-gold/25 transition-all duration-300">
                 <span className="text-[9px] text-platinum/42 bg-white/5 px-2 py-1 font-mono rounded-sm mb-4 inline-block">
                   {CAT_LABELS[featuredPub.category] ?? featuredPub.category}
                 </span>
@@ -226,15 +286,13 @@ export default async function HomePage() {
             Research with<br /><span style={{ color: "#C8A96E" }}>ECADEL LABS.</span>
           </h2>
           <p className="text-platinum/65 text-base leading-relaxed mb-10 max-w-2xl mx-auto">
-            Whether you are a researcher, university, grant body, or institution — there is a role for you in building Africa&apos;s intelligence infrastructure. Start a conversation.
+            Whether you are a researcher, university, grant body, or institution — there is a role for you in building Africa&apos;s intelligence infrastructure.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/fellows"
-              className="px-8 py-4 bg-gold text-obsidian font-display font-semibold text-sm hover:bg-gold-dim transition-colors">
+            <Link href="/fellows" className="px-8 py-4 bg-gold text-obsidian font-display font-semibold text-sm hover:bg-gold-dim transition-colors">
               Explore Fellowships
             </Link>
-            <Link href="/contact"
-              className="px-8 py-4 border border-white/12 text-platinum/72 text-sm hover:text-cream hover:border-white/20 transition-all">
+            <Link href="/contact" className="px-8 py-4 border border-white/12 text-platinum/72 text-sm hover:text-cream hover:border-white/20 transition-all">
               Research Partnership Inquiry
             </Link>
           </div>
