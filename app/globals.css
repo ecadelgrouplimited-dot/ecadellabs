@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
+/* ── ECADEL LABS Brand Theme ────────────────────────────────────────────────── */
+@theme {
+  /* Backgrounds */
+  --color-obsidian:  #060608;
+  --color-deep:      #0A0C12;
+  --color-carbon:    #131720;
+  --color-graphite:  #1A1F2E;
+  --color-slate:     #252B3B;
+
+  /* Gold accent */
+  --color-gold:      #C8A96E;
+  --color-gold-dim:  #A88B54;
+
+  /* Text */
+  --color-cream:     #F0EDE6;
+  --color-platinum:  #C8C4BE;
+  --color-muted:     #7A7670;
+
+  /* Status */
+  --color-emerald:   #4ab478;
+  --color-ruby:      #e05555;
+  --color-amber:     #D4A24C;
+  --color-sapphire:  #5B8FBF;
+
+  /* Fonts */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", "Fira Code", monospace;
+  --font-serif:   "Georgia", "Times New Roman", serif;
+}
+
+/* ── Root variables ────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:      #060608;
+  --fg:      #F0EDE6;
+  --border:  rgba(255, 255, 255, 0.07);
+  --gold:    #C8A96E;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+::selection {
+  background-color: rgba(200, 169, 110, 0.2);
+  color: #F0EDE6;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #060608; }
+::-webkit-scrollbar-thumb { background: #C8A96E; border-radius: 2px; }
+
+/* ── Grid background utility ───────────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(200, 169, 110, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 169, 110, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── Glass effect ──────────────────────────────────────────────────────────── */
+.glass {
+  background: rgba(19, 23, 32, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(200, 169, 110, 0.08);
+}
+
+/* ── Admin-specific ────────────────────────────────────────────────────────── */
+.admin-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #F0EDE6;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+  border-radius: 3px;
+  font-family: var(--font-body);
+}
+.admin-input:focus {
+  border-color: rgba(200,169,110,0.5);
+}
+.admin-input::placeholder {
+  color: rgba(200,196,190,0.3);
+}
+
+/* ── Markdown prose styles ─────────────────────────────────────────────────── */
+.prose {
+  color: #C8C4BE;
+  max-width: 72ch;
+  line-height: 1.8;
+  font-family: var(--font-body);
+}
+.prose h1,.prose h2,.prose h3 { color: #F0EDE6; font-family: var(--font-display); font-weight: 600; margin: 2rem 0 1rem; }
+.prose h1 { font-size: 2rem; }
+.prose h2 { font-size: 1.5rem; }
+.prose h3 { font-size: 1.25rem; }
+.prose p  { margin-bottom: 1.2rem; }
+.prose a  { color: #C8A96E; text-decoration: none; }
+.prose a:hover { text-decoration: underline; }
+.prose strong { color: #F0EDE6; font-weight: 600; }
+.prose em { color: #D4B97E; font-style: italic; }
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: rgba(200,169,110,0.08);
+  color: #C8A96E;
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+}
+.prose pre {
+  background: #0A0C12;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 1.25rem;
+  overflow-x: auto;
+  border-radius: 3px;
+  margin: 1.5rem 0;
+}
+.prose pre code { background: none; padding: 0; color: #C8C4BE; }
+.prose blockquote {
+  border-left: 3px solid #C8A96E;
+  padding-left: 1.5rem;
+  color: #9A9590;
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+.prose ul,.prose ol { padding-left: 1.5rem; margin-bottom: 1.2rem; }
+.prose li { margin-bottom: 0.4rem; }
+.prose hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 2rem 0; }

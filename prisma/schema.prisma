@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Publication {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  abstract    String
+  content     String
+  category    String
+  authors     String
+  tags        String
+  featured    Boolean   @default(false)
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  pdfUrl      String?
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ResearchProject {
+  id           String    @id @default(cuid())
+  title        String
+  slug         String    @unique
+  description  String
+  problem      String
+  methodology  String?
+  outcomes     String?
+  status       String
+  technologies String
+  partners     String?
+  startDate    DateTime?
+  endDate      DateTime?
+  featured     Boolean   @default(false)
+  published    Boolean   @default(false)
+  imageUrl     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Fellow {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  bio         String
+  expertise   String
+  institution String?
+  cohort      String?
+  photoUrl    String?
+  linkedinUrl String?
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Partnership {
+  id          String   @id @default(cuid())
+  institution String
+  slug        String   @unique
+  type        String
+  description String
+  country     String
+  website     String?
+  logoUrl     String?
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Inquiry {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  organisation String?
+  type         String
+  message      String
+  read         Boolean  @default(false)
+  archived     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+}
+
+model Setting {
+  key   String @id
+  value String
+}
