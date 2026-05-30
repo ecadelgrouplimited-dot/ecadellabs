@@ -17,11 +17,12 @@ const S = {
 };
 
 export default async function HomePage() {
-  const [featuredPub, featuredProject, projects, fellows] = await Promise.all([
+  const [featuredPub, featuredProject, projects, fellows, partners] = await Promise.all([
     prisma.publication.findFirst({ where:{ published:true, featured:true }, orderBy:{ publishedAt:"desc" } }),
     prisma.researchProject.findFirst({ where:{ published:true, featured:true } }),
     prisma.researchProject.findMany({ where:{ published:true }, orderBy:{ createdAt:"desc" }, take:3 }),
     prisma.fellow.count({ where:{ active:true } }),
+    prisma.partnership.findMany({ where:{ active:true }, orderBy:[{ featured:"desc" },{ institution:"asc" }], take:8 }),
   ]);
 
   return (
@@ -184,6 +185,32 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Partners strip ───────────────────────────────────────────────── */}
+      {partners.length > 0 && (
+        <section style={{ borderTop:"1px solid rgba(255,255,255,0.07)", backgroundColor:"#0A0C12" }}>
+          <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"2.5rem 1.5rem" }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.5rem" }}>
+              <span style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace" }}>
+                Partner Institutions
+              </span>
+              <Link href="/partnerships" style={{ fontSize:"0.75rem", color:"rgba(200,169,110,0.62)", textDecoration:"none", display:"flex", alignItems:"center", gap:"0.25rem" }}>
+                All partners <ArrowRight size={12} />
+              </Link>
+            </div>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:"1px", backgroundColor:"rgba(255,255,255,0.05)" }}>
+              {partners.map((p) => (
+                <div key={p.id} style={{ backgroundColor:"#0A0C12", padding:"1rem 1.5rem", flex:"1 1 auto", minWidth:"160px", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:"0.8125rem", fontWeight:500, color:"rgba(200,196,190,0.62)", marginBottom:"2px" }}>{p.institution}</div>
+                    <div style={{ fontSize:"8px", letterSpacing:"0.08em", textTransform:"uppercase", color:"rgba(200,196,190,0.28)", fontFamily:"monospace" }}>{p.country}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── CTA ─────────────────────────────────────────────────────────── */}
       <section style={{ borderTop:"1px solid rgba(255,255,255,0.07)" }}>

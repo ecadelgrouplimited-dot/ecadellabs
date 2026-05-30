@@ -2,11 +2,13 @@
 ## Project Blueprint & Architecture
 
 **Domain:** ecadellabs.cloud  
-**Status:** Planning  
+**Status:** Active · Live  
 **Parent institution:** ECADEL GROUP LIMITED (ecadelgroup.com)  
 **VPS:** 72.62.185.212 — Ubuntu 24.04 LTS  
 **Port:** 3001 (Nginx proxied)  
 **Repository:** github.com/ecadelgrouplimited-dot/ecadellabs  
+**Stack:** Next.js 16.2.6 · TypeScript · Tailwind CSS v4 · Prisma 7 · SQLite (better-sqlite3) · PM2  
+**SSL:** Let's Encrypt — expires 2026-08-28 (auto-renews)
 
 ---
 
@@ -579,19 +581,36 @@ cd /var/www/ecadellabs && ./deploy.sh
 - [x] Grant body target pages (ecadellabs.cloud/grants — AfDB, Gates, USAID, EU Horizon, IFC)
 - [x] Research agenda published (3 active/planned projects live)
 - [x] First two publications live (research note + position paper)
-- [ ] First external fellow onboarded
-- [ ] First university partnership formalised (Makerere target)
-- [ ] First grant application submitted
+- [x] Filters on Research (status), Publications (category), Partnerships (type)
+- [x] SEO metadata on all pages (generateMetadata, per-page titles)
+- [x] Sitemap.xml + robots.txt
+- [x] 404 branded not-found page
+- [x] Loading skeleton states (Research, Publications)
+- [x] Related content on research project pages and publication pages
+- [x] Partners strip on homepage
+- [x] Mobile-responsive navbar and footer
+- [ ] First external fellow onboarded (operational)
+- [ ] First university partnership formalised — Makerere target (operational)
+- [ ] First grant application submitted (operational)
 
 ### Phase 3 — Authority
-- [ ] Second and third publications
-- [ ] First external fellow onboarded
-- [ ] First university partnership formalised
-- [ ] First grant application submitted using ecadellabs.cloud as institutional reference
-- [ ] Open-source research tools released
+- [ ] Third and fourth publications (admin task)
+- [ ] Open-source research tool or dataset released publicly
+- [ ] Research newsletter / mailing list
+- [ ] Google Scholar indexing for publications
+- [ ] Academic citation tracking integration
+- [ ] First external fellow profile page (requires admin → new fellow record)
+- [ ] University partnership press release page
+
+### Phase 4 — Platform
+- [ ] Full-text search across publications and research
+- [ ] Public research API (REST endpoints for open data)
+- [ ] PDF generation for publications
+- [ ] Collaborative research application portal
+- [ ] Multi-admin support and role-based access
 
 ---
 
-*Document authored: May 2026*  
-*ECADEL LABS — Research & Innovation Engine*  
+*Document authored: May 2026 · Last updated: May 2026*
+*ECADEL LABS — Research & Innovation Engine*
 *A division of ECADEL GROUP LIMITED · Kampala, Uganda*
