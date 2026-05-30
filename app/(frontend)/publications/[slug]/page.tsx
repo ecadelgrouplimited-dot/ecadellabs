@@ -9,7 +9,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug:stri
   const { slug } = await params;
   const pub = await prisma.publication.findFirst({ where:{ slug, published:true } });
   if (!pub) return { title:"Publication" };
-  return { title: pub.title, description: pub.abstract.slice(0, 160) };
+  const authors = JSON.parse(pub.authors) as string[];
+  return {
+    title:       pub.title,
+    description: pub.abstract.slice(0, 160),
+    other: {
+      "citation_title":           pub.title,
+      "citation_author":          authors.join("; "),
+      "citation_publication_date":pub.publishedAt ? String(new Date(pub.publishedAt).getFullYear()) : "",
+      "citation_journal_title":   "ECADEL LABS",
+      "citation_abstract_html_url":`https://ecadellabs.cloud/publications/${pub.slug}`,
+      ...(pub.pdfUrl ? { "citation_pdf_url": pub.pdfUrl } : {}),
+    },
+  };
 }
 
 const CAT_LABELS: Record<string,string> = {
@@ -45,8 +57,21 @@ export default async function PublicationPage({ params }: { params: Promise<{ sl
 
   const relatedProjects = related.length > 0 ? related : allProjects.slice(0, 2);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": pub.title,
+    "description": pub.abstract,
+    "author": authors.map((a) => ({ "@type":"Person", "name":a })),
+    "datePublished": pub.publishedAt ? new Date(pub.publishedAt).toISOString().split("T")[0] : undefined,
+    "publisher": { "@type":"Organization", "name":"ECADEL LABS", "url":"https://ecadellabs.cloud" },
+    "url": `https://ecadellabs.cloud/publications/${pub.slug}`,
+    ...(pub.pdfUrl ? { "encoding": { "@type":"MediaObject", "contentUrl":pub.pdfUrl, "encodingFormat":"application/pdf" } } : {}),
+  };
+
   return (
     <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Header */}
       <div style={{ borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
         <div style={{ maxWidth:"56rem", margin:"0 auto", padding:"7rem 1.5rem 3rem" }}>
@@ -82,7 +107,10 @@ export default async function PublicationPage({ params }: { params: Promise<{ sl
           {tags.length > 0 && (
             <div style={{ display:"flex", flexWrap:"wrap", gap:"0.375rem" }}>
               {tags.map((t) => (
-                <span key={t} style={{ fontSize:"9px", padding:"2px 7px", backgroundColor:"rgba(200,169,110,0.06)", color:"rgba(200,169,110,0.5)", fontFamily:"monospace" }}>{t}</span>
+                <Link key={t} href={`/tags/${encodeURIComponent(t)}`} style={{ fontSize:"9px", padding:"2px 7px", backgroundColor:"rgba(200,169,110,0.06)", color:"rgba(200,169,110,0.5)", fontFamily:"monospace", textDecoration:"none" }}
+                  className="hover:bg-gold/15 hover:text-gold transition-colors">
+                  {t}
+                </Link>
               ))}
             </div>
           )}

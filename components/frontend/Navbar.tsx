@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, Search } from "lucide-react";
 
 const LINKS = [
   { href:"/research",     label:"Research" },
@@ -59,7 +59,16 @@ export default function Navbar() {
         </nav>
 
         {/* ── Desktop actions ──────────────────────────────── */}
-        <div className="nav-actions">
+        <div className="nav-actions" style={{ gap:"0.75rem" }}>
+          {/* Search icon */}
+          <Link href="/search" style={{ display:"flex", alignItems:"center", padding:"0.375rem", color:"rgba(200,196,190,0.45)", transition:"color 0.2s", textDecoration:"none" }}
+            onMouseOver={(e) => (e.currentTarget.style.color = "#C8A96E")}
+            onMouseOut={(e)  => (e.currentTarget.style.color = "rgba(200,196,190,0.45)")}
+            title="Search"
+          >
+            <Search size={15} />
+          </Link>
+
           <Link
             href="https://ecadelgroup.com"
             target="_blank"
@@ -97,6 +106,12 @@ export default function Navbar() {
           className="mobile-menu"
           style={{ backgroundColor:"#0A0C12", borderTop:"1px solid rgba(255,255,255,0.07)", padding:"1.25rem 1.5rem 1.5rem" }}
         >
+          {/* Mobile search */}
+          <Link href="/search" onClick={() => setOpen(false)} style={{ display:"flex", alignItems:"center", gap:"0.75rem", padding:"0.75rem 0.875rem", marginBottom:"0.75rem", backgroundColor:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", color:"rgba(200,196,190,0.5)", fontSize:"0.875rem", textDecoration:"none" }}>
+            <Search size={14} />
+            Search publications &amp; research…
+          </Link>
+
           {/* Nav links */}
           <div style={{ display:"flex", flexDirection:"column", gap:"0.125rem", marginBottom:"1.25rem" }}>
             {LINKS.map((l) => {

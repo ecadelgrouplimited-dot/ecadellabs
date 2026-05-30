@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, FileText, FlaskConical, ChevronRight, ArrowUpRight } from "lucide-react";
+import NewsletterSignup from "@/components/frontend/NewsletterSignup";
 
 export const dynamic = "force-dynamic";
 
@@ -211,6 +212,26 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* ── Newsletter ───────────────────────────────────────────────────── */}
+      <section style={{ borderTop:"1px solid rgba(255,255,255,0.07)", backgroundColor:"#0A0C12" }}>
+        <div style={{ maxWidth:"80rem", margin:"0 auto", padding:"3rem 1.5rem" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"2rem" }}>
+            <div>
+              <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,169,110,0.7)", fontFamily:"monospace", marginBottom:"0.5rem" }}>
+                Research Updates
+              </p>
+              <p style={{ fontSize:"1rem", fontWeight:600, color:"#F0EDE6", fontFamily:"var(--font-display)", marginBottom:"0.375rem" }}>
+                Stay informed on our research.
+              </p>
+              <p style={{ fontSize:"0.8125rem", color:"rgba(200,196,190,0.5)" }}>
+                New publications and research findings, delivered to your inbox.
+              </p>
+            </div>
+            <NewsletterSignup />
+          </div>
+        </div>
+      </section>
 
       {/* ── CTA ─────────────────────────────────────────────────────────── */}
       <section style={{ borderTop:"1px solid rgba(255,255,255,0.07)" }}>

@@ -104,7 +104,10 @@ export default async function ResearchProjectPage({ params }: { params: Promise<
                   <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,196,190,0.35)", fontFamily:"monospace", marginBottom:"0.75rem" }}>Technologies</p>
                   <div style={{ display:"flex", flexWrap:"wrap", gap:"0.375rem" }}>
                     {technologies.map((t) => (
-                      <span key={t} style={{ fontSize:"0.75rem", padding:"4px 10px", backgroundColor:"rgba(255,255,255,0.04)", color:"rgba(200,196,190,0.58)", fontFamily:"monospace" }}>{t}</span>
+                      <Link key={t} href={`/tags/${encodeURIComponent(t)}`} style={{ fontSize:"0.75rem", padding:"4px 10px", backgroundColor:"rgba(255,255,255,0.04)", color:"rgba(200,196,190,0.58)", fontFamily:"monospace", textDecoration:"none" }}
+                        className="hover:bg-gold/10 hover:text-gold transition-colors">
+                        {t}
+                      </Link>
                     ))}
                   </div>
                 </div>

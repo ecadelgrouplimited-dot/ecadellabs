@@ -3,23 +3,45 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, FlaskConical, Users, Building2,
   MessageSquare, Settings, LogOut, ChevronRight,
 } from "lucide-react";
 
 const navItems = [
-  { href: "/admin",            icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/admin/publications",icon: FileText,        label: "Publications" },
-  { href: "/admin/research",   icon: FlaskConical,     label: "Research" },
-  { href: "/admin/fellows",    icon: Users,            label: "Fellows" },
-  { href: "/admin/partnerships",icon: Building2,       label: "Partnerships" },
-  { href: "/admin/inquiries",  icon: MessageSquare,    label: "Inquiries" },
-  { href: "/admin/settings",   icon: Settings,         label: "Settings" },
+  { href: "/admin",             icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/admin/publications", icon: FileText,        label: "Publications" },
+  { href: "/admin/research",    icon: FlaskConical,     label: "Research" },
+  { href: "/admin/fellows",     icon: Users,            label: "Fellows" },
+  { href: "/admin/partnerships",icon: Building2,        label: "Partnerships" },
+  { href: "/admin/inquiries",   icon: MessageSquare,    label: "Inquiries", badge: true },
+  { href: "/admin/settings",    icon: Settings,         label: "Settings" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/inquiries")
+      .then((r) => r.json())
+      .then((data: { read:boolean }[]) => {
+        if (Array.isArray(data)) setUnread(data.filter((i) => !i.read).length);
+      })
+      .catch(() => {});
+
+    const interval = setInterval(() => {
+      fetch("/api/inquiries")
+        .then((r) => r.json())
+        .then((data: { read:boolean }[]) => {
+          if (Array.isArray(data)) setUnread(data.filter((i) => !i.read).length);
+        })
+        .catch(() => {});
+    }, 60000); // refresh every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -34,8 +56,7 @@ export default function Sidebar() {
           <Image
             src="/logos/ecadel_labs_transparent_1600.png"
             alt="ECADEL LABS"
-            width={36}
-            height={36}
+            width={36} height={36}
             className="opacity-85 group-hover:opacity-100 transition-opacity"
           />
           <div>
@@ -61,6 +82,7 @@ export default function Sidebar() {
               item.href === "/admin"
                 ? pathname === "/admin"
                 : pathname.startsWith(item.href);
+            const showBadge = item.badge && unread > 0;
             return (
               <li key={item.href}>
                 <Link
@@ -75,7 +97,14 @@ export default function Sidebar() {
                     <Icon size={14} className={active ? "text-gold" : "text-platinum/50 group-hover:text-cream"} />
                     <span className="font-medium">{item.label}</span>
                   </div>
-                  {active && <ChevronRight size={12} className="text-gold/60" />}
+                  <div className="flex items-center gap-1.5">
+                    {showBadge && (
+                      <span style={{ fontSize:"9px", padding:"1px 6px", backgroundColor:"rgba(212,162,76,0.2)", color:"#D4A24C", border:"1px solid rgba(212,162,76,0.3)", borderRadius:"2px" }}>
+                        {unread}
+                      </span>
+                    )}
+                    {active && <ChevronRight size={12} className="text-gold/60" />}
+                  </div>
                 </Link>
               </li>
             );
@@ -93,11 +122,7 @@ export default function Sidebar() {
           Sign out
         </button>
         <div className="mt-3 px-3">
-          <Link
-            href="/"
-            target="_blank"
-            className="text-[10px] text-platinum/38 hover:text-gold transition-colors duration-150 flex items-center gap-1"
-          >
+          <Link href="/" target="_blank" className="text-[10px] text-platinum/38 hover:text-gold transition-colors duration-150 flex items-center gap-1">
             ↗ View live site
           </Link>
         </div>

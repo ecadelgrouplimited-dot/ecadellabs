@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import { Plus, Edit } from "lucide-react";
+import { Plus, Edit, ExternalLink } from "lucide-react";
+import PublishToggle from "@/components/admin/PublishToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +29,9 @@ export default async function ResearchAdmin() {
 
       <div className="bg-carbon border border-white/7">
         <div className="grid grid-cols-12 gap-4 px-6 py-3 border-b border-white/7 text-[9px] tracking-[0.2em] uppercase text-muted font-mono">
-          <span className="col-span-5">Title</span>
-          <span className="col-span-3">Status</span>
+          <span className="col-span-4">Title</span>
+          <span className="col-span-2">Status</span>
+          <span className="col-span-2">Published</span>
           <span className="col-span-3">Date</span>
           <span className="col-span-1"></span>
         </div>
@@ -39,22 +41,30 @@ export default async function ResearchAdmin() {
           </div>
         ) : projects.map((p) => (
           <div key={p.id} className="grid grid-cols-12 gap-4 px-6 py-4 items-center border-t border-white/5 hover:bg-graphite/30 transition-colors">
-            <div className="col-span-5">
+            <div className="col-span-4">
               <div className="text-sm text-cream font-medium truncate">{p.title}</div>
-              <div className="text-[10px] text-platinum/38 truncate mt-0.5">{p.problem.slice(0, 80)}…</div>
+              <div className="text-[10px] text-platinum/38 truncate mt-0.5">{p.problem.slice(0, 60)}…</div>
             </div>
-            <div className="col-span-3">
+            <div className="col-span-2">
               <span className={`text-[10px] px-2 py-1 rounded-sm ${STATUS_STYLES[p.status] ?? "bg-white/5 text-muted"}`}>
                 {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
               </span>
             </div>
+            <div className="col-span-2">
+              <PublishToggle id={p.id} published={p.published} endpoint="research" />
+            </div>
             <div className="col-span-3 text-[10px] text-muted font-mono">
               {new Date(p.createdAt).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"2-digit" })}
             </div>
-            <div className="col-span-1 flex justify-end">
+            <div className="col-span-1 flex items-center gap-2 justify-end">
               <Link href={`/admin/research/${p.id}`} className="text-platinum/38 hover:text-gold transition-colors">
                 <Edit size={13} />
               </Link>
+              {p.published && (
+                <Link href={`/research/${p.slug}`} target="_blank" className="text-platinum/38 hover:text-sapphire transition-colors">
+                  <ExternalLink size={13} />
+                </Link>
+              )}
             </div>
           </div>
         ))}

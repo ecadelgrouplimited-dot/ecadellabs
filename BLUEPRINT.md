@@ -593,21 +593,39 @@ cd /var/www/ecadellabs && ./deploy.sh
 - [ ] First university partnership formalised — Makerere target (operational)
 - [ ] First grant application submitted (operational)
 
-### Phase 3 — Authority
-- [ ] Third and fourth publications (admin task)
-- [ ] Open-source research tool or dataset released publicly
-- [ ] Research newsletter / mailing list
-- [ ] Google Scholar indexing for publications
-- [ ] Academic citation tracking integration
-- [ ] First external fellow profile page (requires admin → new fellow record)
-- [ ] University partnership press release page
+### Phase 3 — Authority (Dev Sprint)
+**Goal:** Make the site feel like a serious research institution with discovery, reach, and operational polish.
+
+#### 3A — Discovery & Reach
+- [x] Full-text search (`/search?q=...`) — research + publications, grouped results, search icon in navbar
+- [x] Tag/keyword pages (`/tags/[tag]`) — clicking any tag shows all content with that tag (SEO + discovery)
+- [x] Newsletter signup — email capture on homepage, stored as Inquiry type "newsletter"
+- [ ] Research updates email template — ECADEL LABS branded outreach template
+
+#### 3B — Admin Operational Polish
+- [x] Admin: inline publish/unpublish toggle on Publications and Research list pages
+- [x] Admin sidebar: live unread inquiry count badge (polls every 60s)
+- [ ] Admin: featured content selectors on Settings page (pin specific pub/project to homepage)
+- [ ] Admin: publication image upload field active (currently URL-only)
+
+#### 3C — Credibility Signals
+- [x] Google Scholar meta tags (`citation_title`, `citation_author`, `citation_date`, `citation_pdf_url`)
+- [x] JSON-LD `ScholarlyArticle` structured data on publication pages
+- [ ] Print stylesheet for publication pages (academic printing)
+- [ ] Open Graph image per publication (auto-generated title card)
+
+#### 3D — Operational (Content team)
+- [ ] Third and fourth publications (via admin)
+- [ ] First external fellow onboarded (via admin → new fellow record)
+- [ ] First university partnership formalised — Makerere University target
+- [ ] First grant application submitted using ecadellabs.cloud as institutional reference
 
 ### Phase 4 — Platform
-- [ ] Full-text search across publications and research
-- [ ] Public research API (REST endpoints for open data)
-- [ ] PDF generation for publications
-- [ ] Collaborative research application portal
-- [ ] Multi-admin support and role-based access
+- [ ] Public research API (`/api/public/...`) — REST endpoints, rate-limited, documented
+- [ ] PDF export of publications (server-side rendering to PDF)
+- [ ] Collaborative research application portal (structured research proposals)
+- [ ] Multi-admin with role-based access (editor vs admin)
+- [ ] Full analytics dashboard in admin (page views, inquiry sources, traffic)
 
 ---
 
