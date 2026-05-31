@@ -623,23 +623,26 @@ cd /var/www/ecadellabs && ./deploy.sh
 ### Phase 4 — Platform (Current Sprint)
 **Goal:** Open data, extended reach, and operational intelligence.
 
-#### 4A — Open Data & API
+#### 4A — Open Data & API ✓
 - [x] Public research API (`/api/public/publications`, `/api/public/research`) — JSON, CORS, versioned
-- [x] API documentation page (`/api-docs`) — usage examples, endpoint reference
+- [x] API documentation page (`/api-docs`) — usage examples, endpoint reference, attribution note
 - [ ] RSS feed for publications (`/feed.xml`) — for academic aggregators and RSS readers
 - [ ] Public dataset downloads (CSV/JSON exports of research agenda)
 
-#### 4B — Extended Admin
-- [x] Admin dashboard: inquiry breakdown by type (research/fellowship/grant/newsletter)
+#### 4B — Extended Admin ✓
+- [x] Admin dashboard: inquiry breakdown by type with bar chart (research/fellowship/grant/newsletter)
+- [x] Admin settings: featured content selectors — pin specific pub/project to homepage hero
 - [ ] Admin: newsletter subscriber list view (filter inquiries by type=newsletter)
 - [ ] Admin: bulk publish/unpublish on list pages (multi-select + action)
 - [ ] Admin: activity log (who changed what, when)
 
-#### 4C — Platform Features
-- [ ] Research application portal (structured proposal submission form)
-- [ ] Multi-admin: invite team members with editor role (read + publish, no settings)
-- [ ] Performance analytics integration (lightweight, privacy-respecting)
-- [ ] PDF export of publications (server-side via Puppeteer or WeasyPrint)
+#### 4C — Platform Features (Next Sprint)
+- [ ] RSS feed (`/feed.xml`) for academic RSS readers and Google Scholar
+- [ ] Research application portal (structured proposal submission form with PDF attachment)
+- [ ] Multi-admin: invite team members with editor role (read + publish, no settings access)
+- [ ] Performance analytics (lightweight page view tracking, privacy-respecting)
+- [ ] PDF export of publications (server-side generation)
+- [ ] Research impact tracking (citation count, download tracking)
 
 ---
 
