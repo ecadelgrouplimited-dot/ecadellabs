@@ -133,24 +133,52 @@ export default async function PublicationPage({ params }: { params: Promise<{ sl
       {/* ── Body ────────────────────────────────────────────────────── */}
       <div style={{ maxWidth:"56rem", margin:"0 auto", padding:"3rem 1.5rem 5rem" }}>
 
-        {/* Abstract */}
-        <div style={{ padding:"1.75rem 2rem", backgroundColor:"#0A0C12", borderLeft:"3px solid #C8A96E", marginBottom:"2.5rem", borderRadius:"2px" }}>
+        {/* ── Abstract ────────────────────────────────────────────── */}
+        <div style={{ padding:"1.75rem 2rem", backgroundColor:"#0A0C12", borderLeft:"3px solid #C8A96E", marginBottom:"3rem", borderRadius:"2px" }}>
           <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,169,110,0.7)", fontFamily:"monospace", marginBottom:"0.75rem" }}>Abstract</p>
           <p style={{ color:"rgba(200,196,190,0.72)", lineHeight:1.85, fontSize:"0.9375rem" }}>{pub.abstract}</p>
         </div>
 
-        {/* ── ECADEL LABS READER ──────────────────────────────────── */}
-        <div style={{ marginBottom:"2.5rem" }}>
-          <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace", marginBottom:"1rem" }}>
-            {pub.pdfUrl ? "Document Viewer" : "Full Text"}
-          </p>
-          <EcadelReader
-            documentUrl={pub.pdfUrl}
-            htmlContent={htmlContent}
-            title={pub.title}
-            estimatedWords={wordCount}
-          />
-        </div>
+        {/* ── Full text content (markdown → prose) ─────────────────── */}
+        {htmlContent && (
+          <div style={{ marginBottom:"3rem" }}>
+            <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace", marginBottom:"1.5rem" }}>
+              Full Text
+            </p>
+
+            {/* Reading controls — font size */}
+            <EcadelReader
+              documentUrl={null}
+              htmlContent={htmlContent}
+              title={pub.title}
+              estimatedWords={wordCount}
+            />
+          </div>
+        )}
+
+        {/* ── Attached document viewer (Google Drive / PDF / URL) ──── */}
+        {pub.pdfUrl && (
+          <div style={{ marginBottom:"3rem" }}>
+            <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace", marginBottom:"1rem" }}>
+              Attached Document
+            </p>
+            <EcadelReader
+              documentUrl={pub.pdfUrl}
+              htmlContent={null}
+              title={pub.title}
+              estimatedWords={0}
+            />
+          </div>
+        )}
+
+        {/* ── No content fallback ──────────────────────────────────── */}
+        {!htmlContent && !pub.pdfUrl && (
+          <div style={{ padding:"2rem", backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", borderRadius:"3px", marginBottom:"3rem", textAlign:"center" }}>
+            <p style={{ color:"rgba(200,196,190,0.35)", fontSize:"0.875rem" }}>
+              Full content coming soon. Check back after the next update.
+            </p>
+          </div>
+        )}
 
         {/* Print button */}
         <div className="no-print" style={{ marginBottom:"2rem" }}>
