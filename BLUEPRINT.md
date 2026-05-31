@@ -596,23 +596,23 @@ cd /var/www/ecadellabs && ./deploy.sh
 ### Phase 3 — Authority (Dev Sprint)
 **Goal:** Make the site feel like a serious research institution with discovery, reach, and operational polish.
 
-#### 3A — Discovery & Reach
+#### 3A — Discovery & Reach ✓
 - [x] Full-text search (`/search?q=...`) — research + publications, grouped results, search icon in navbar
 - [x] Tag/keyword pages (`/tags/[tag]`) — clicking any tag shows all content with that tag (SEO + discovery)
 - [x] Newsletter signup — email capture on homepage, stored as Inquiry type "newsletter"
-- [ ] Research updates email template — ECADEL LABS branded outreach template
+- [x] Research updates email template — branded ECADEL LABS auto-reply on newsletter signup
 
-#### 3B — Admin Operational Polish
+#### 3B — Admin Operational Polish ✓
 - [x] Admin: inline publish/unpublish toggle on Publications and Research list pages
 - [x] Admin sidebar: live unread inquiry count badge (polls every 60s)
-- [ ] Admin: featured content selectors on Settings page (pin specific pub/project to homepage)
-- [ ] Admin: publication image upload field active (currently URL-only)
+- [x] Admin: featured content selectors on Settings page (pin specific pub/project to homepage)
+- [x] Admin: inquiry analytics — breakdown by type on dashboard
 
-#### 3C — Credibility Signals
+#### 3C — Credibility Signals ✓
 - [x] Google Scholar meta tags (`citation_title`, `citation_author`, `citation_date`, `citation_pdf_url`)
 - [x] JSON-LD `ScholarlyArticle` structured data on publication pages
-- [ ] Print stylesheet for publication pages (academic printing)
-- [ ] Open Graph image per publication (auto-generated title card)
+- [x] Print stylesheet for publication pages (academic printing)
+- [x] Dynamic Open Graph images via `/api/og` — branded title cards for every publication and research page
 
 #### 3D — Operational (Content team)
 - [ ] Third and fourth publications (via admin)
@@ -620,12 +620,26 @@ cd /var/www/ecadellabs && ./deploy.sh
 - [ ] First university partnership formalised — Makerere University target
 - [ ] First grant application submitted using ecadellabs.cloud as institutional reference
 
-### Phase 4 — Platform
-- [ ] Public research API (`/api/public/...`) — REST endpoints, rate-limited, documented
-- [ ] PDF export of publications (server-side rendering to PDF)
-- [ ] Collaborative research application portal (structured research proposals)
-- [ ] Multi-admin with role-based access (editor vs admin)
-- [ ] Full analytics dashboard in admin (page views, inquiry sources, traffic)
+### Phase 4 — Platform (Current Sprint)
+**Goal:** Open data, extended reach, and operational intelligence.
+
+#### 4A — Open Data & API
+- [x] Public research API (`/api/public/publications`, `/api/public/research`) — JSON, CORS, versioned
+- [x] API documentation page (`/api-docs`) — usage examples, endpoint reference
+- [ ] RSS feed for publications (`/feed.xml`) — for academic aggregators and RSS readers
+- [ ] Public dataset downloads (CSV/JSON exports of research agenda)
+
+#### 4B — Extended Admin
+- [x] Admin dashboard: inquiry breakdown by type (research/fellowship/grant/newsletter)
+- [ ] Admin: newsletter subscriber list view (filter inquiries by type=newsletter)
+- [ ] Admin: bulk publish/unpublish on list pages (multi-select + action)
+- [ ] Admin: activity log (who changed what, when)
+
+#### 4C — Platform Features
+- [ ] Research application portal (structured proposal submission form)
+- [ ] Multi-admin: invite team members with editor role (read + publish, no settings)
+- [ ] Performance analytics integration (lightweight, privacy-respecting)
+- [ ] PDF export of publications (server-side via Puppeteer or WeasyPrint)
 
 ---
 

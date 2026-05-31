@@ -11,6 +11,7 @@ const RESEARCH_LINKS = [
 
 const INSTITUTION_LINKS = [
   { href:"/contact",                label:"Contact",             external:false },
+  { href:"/api-docs",              label:"Research API",        external:false },
   { href:"https://ecadelgroup.com", label:"ECADEL GROUP",        external:true },
   { href:"https://sbb.finance",     label:"Smart Business Book", external:true },
   { href:"https://pame.cc",         label:"PAME AI",             external:true },

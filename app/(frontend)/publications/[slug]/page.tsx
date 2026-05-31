@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Download, ArrowRight, FlaskConical } from "lucide-react";
+import PrintButton from "@/components/ui/PrintButton";
 import { marked } from "marked";
 import type { Metadata } from "next";
 
@@ -131,8 +132,13 @@ export default async function PublicationPage({ params }: { params: Promise<{ sl
           <article className="prose max-w-none" dangerouslySetInnerHTML={{ __html: html }} />
         )}
 
+        {/* Print button */}
+        <div className="no-print" style={{ marginTop:"2rem", marginBottom:"2rem" }}>
+          <PrintButton />
+        </div>
+
         {/* Citation */}
-        <div style={{ marginTop:"3.5rem", paddingTop:"2rem", borderTop:"1px solid rgba(255,255,255,0.07)", marginBottom:"3rem" }}>
+        <div style={{ marginTop:"1rem", paddingTop:"2rem", borderTop:"1px solid rgba(255,255,255,0.07)", marginBottom:"3rem" }}>
           <p style={{ fontSize:"9px", letterSpacing:"0.35em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace", marginBottom:"0.75rem" }}>Cite This Work</p>
           <div style={{ padding:"1rem 1.25rem", backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", fontFamily:"monospace", fontSize:"0.75rem", color:"rgba(200,196,190,0.5)", lineHeight:1.7 }}>
             {authors.join(", ")} ({pub.publishedAt ? new Date(pub.publishedAt).getFullYear() : new Date().getFullYear()}).{" "}

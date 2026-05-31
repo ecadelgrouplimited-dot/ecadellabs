@@ -211,3 +211,49 @@ body {
   transition: color 0.2s;
 }
 .footer-link:hover { color: #F0EDE6; }
+
+/* ── Print styles (academic publication printing) ──────────────────────── */
+@media print {
+  header, footer, nav, .no-print { display: none !important; }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 { color: #111 !important; font-family: Georgia, serif; page-break-after: avoid; }
+  h1 { font-size: 22pt; margin-bottom: 0.5em; }
+  h2 { font-size: 16pt; margin-top: 1.5em; }
+  h3 { font-size: 13pt; }
+
+  p, li { color: #222 !important; orphans: 3; widows: 3; }
+  a { color: #111 !important; text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #555; }
+
+  /* Citation box */
+  code, pre { border: 1px solid #ccc !important; background: #f8f8f8 !important; color: #333 !important; font-size: 9pt; }
+
+  /* Abstract highlight */
+  .prose { color: #222 !important; max-width: 100%; }
+  .prose blockquote { border-left: 3px solid #C8A96E; color: #333 !important; }
+  .prose strong { color: #111 !important; }
+
+  /* ECADEL LABS print header */
+  body::before {
+    content: "ECADEL LABS — Research & Innovation Engine — ecadellabs.cloud";
+    display: block;
+    font-size: 8pt;
+    color: #888;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 6pt;
+    margin-bottom: 18pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Page break control */
+  section { page-break-inside: avoid; }
+  .related-content { display: none; }
+}
