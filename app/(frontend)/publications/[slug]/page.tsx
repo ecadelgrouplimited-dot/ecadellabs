@@ -44,7 +44,14 @@ export default async function PublicationPage({ params }: { params: Promise<{ sl
 
   const authors     = JSON.parse(pub.authors) as string[];
   const tags        = JSON.parse(pub.tags)    as string[];
-  const htmlContent = pub.content ? String(await marked(pub.content)) : null;
+  // If content starts with an HTML tag it is already HTML — don't re-parse with marked
+  const rawContent = pub.content ?? "";
+  const isAlreadyHtml = /^\s*<[a-z!]/i.test(rawContent);
+  const htmlContent = rawContent
+    ? isAlreadyHtml
+      ? rawContent
+      : String(await marked(rawContent))
+    : null;
   const wordCount   = pub.content ? pub.content.split(/\s+/).filter(Boolean).length : 0;
 
   // Related research projects

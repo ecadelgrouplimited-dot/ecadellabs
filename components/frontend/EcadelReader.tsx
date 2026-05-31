@@ -1,12 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Minimize2, Maximize2, Download, Printer, Minus, Plus,
   BookOpen, ChevronUp, AlertCircle, ExternalLink,
 } from "lucide-react";
 
 // ── URL utilities ──────────────────────────────────────────────────────────
+
+function extractGDriveId(url: string): string | null {
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  return m ? m[1] : null;
+}
 
 function detectUrlType(url: string): "gdrive" | "gdoc" | "gsheet" | "pdf" | "external" {
   if (/drive\.google\.com\/file\/d\//.test(url))   return "gdrive";
@@ -16,39 +21,67 @@ function detectUrlType(url: string): "gdrive" | "gdoc" | "gsheet" | "pdf" | "ext
   return "external";
 }
 
+/**
+ * Converts any Google-hosted URL into an embeddable URL.
+ *
+ * Strategy:
+ *  - Google Drive files → Google Docs Viewer (renders HTML, PDF, DOCX, etc.)
+ *  - Google Docs native → /preview (always works for native docs)
+ *  - Google Sheets → /preview
+ *  - Direct PDF → embed as-is (browsers render natively)
+ *  - External HTML / other → Google Docs Viewer wraps it for clean rendering
+ */
 function toEmbedUrl(url: string): string {
   const type = detectUrlType(url);
+
   if (type === "gdrive") {
-    const m = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/);
-    return m ? `https://drive.google.com/file/d/${m[1]}/preview` : url;
+    const id = extractGDriveId(url);
+    if (!id) return url;
+    // Use Google Docs Viewer — handles HTML, PDF, DOCX, etc. without showing source
+    const fileUrl = encodeURIComponent(`https://drive.google.com/uc?export=view&id=${id}`);
+    return `https://docs.google.com/viewer?url=${fileUrl}&embedded=true`;
   }
+
   if (type === "gdoc") {
-    const m = url.match(/docs\.google\.com\/document\/d\/([^/?]+)/);
-    return m ? `https://docs.google.com/document/d/${m[1]}/preview` : url;
+    const id = extractGDriveId(url);
+    return id ? `https://docs.google.com/document/d/${id}/preview` : url;
   }
+
   if (type === "gsheet") {
-    const m = url.match(/docs\.google\.com\/spreadsheets\/d\/([^/?]+)/);
-    return m ? `https://docs.google.com/spreadsheets/d/${m[1]}/preview` : url;
+    const id = extractGDriveId(url);
+    return id ? `https://docs.google.com/spreadsheets/d/${id}/preview` : url;
   }
-  return url; // pdf / external — embed directly
+
+  if (type === "pdf") {
+    // PDF: browser renders natively in iframe
+    return url;
+  }
+
+  // External URL — try Google Docs Viewer for HTML/Office files
+  const ext = url.split("?")[0].split(".").pop()?.toLowerCase() ?? "";
+  if (["html","htm","doc","docx","xls","xlsx","ppt","pptx"].includes(ext)) {
+    return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+  }
+
+  return url;
 }
 
 function toDownloadUrl(url: string): string {
   const type = detectUrlType(url);
   if (type === "gdrive") {
-    const m = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/);
-    return m ? `https://drive.google.com/uc?export=download&id=${m[1]}` : url;
+    const id = extractGDriveId(url);
+    return id ? `https://drive.google.com/uc?export=download&id=${id}` : url;
   }
   return url;
 }
 
 function getDocLabel(url: string): string {
   const type = detectUrlType(url);
-  if (type === "gdrive")  return "Google Drive Document";
+  if (type === "gdrive")  return "Google Drive";
   if (type === "gdoc")    return "Google Doc";
   if (type === "gsheet")  return "Google Sheet";
-  if (type === "pdf")     return "PDF Document";
-  return "External Document";
+  if (type === "pdf")     return "PDF";
+  return "Document";
 }
 
 // ── Reading progress hook ─────────────────────────────────────────────────
