@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, FlaskConical, Users,
   Building2, MessageSquare, Settings, LogOut, ExternalLink, Mail,
+  BarChart2, UserCog,
 } from "lucide-react";
 
 const NAV = [
@@ -15,9 +16,11 @@ const NAV = [
   { href:"/admin/research",    icon:FlaskConical,     label:"Research" },
   { href:"/admin/fellows",     icon:Users,            label:"Fellows" },
   { href:"/admin/partnerships",icon:Building2,        label:"Partnerships" },
-  { href:"/admin/inquiries",   icon:MessageSquare,    label:"Inquiries", badge:true },
-  { href:"/admin/newsletter",  icon:Mail,             label:"Newsletter" },
-  { href:"/admin/settings",    icon:Settings,         label:"Settings" },
+  { href:"/admin/inquiries",   icon:MessageSquare, label:"Inquiries",  badge:true,  adminOnly:false },
+  { href:"/admin/analytics",   icon:BarChart2,     label:"Analytics",             adminOnly:false },
+  { href:"/admin/newsletter",  icon:Mail,          label:"Newsletter",            adminOnly:true },
+  { href:"/admin/users",       icon:UserCog,       label:"Users",                 adminOnly:true },
+  { href:"/admin/settings",    icon:Settings,      label:"Settings",              adminOnly:true },
 ];
 
 const ITEM: React.CSSProperties = {
@@ -29,7 +32,8 @@ const ITEM: React.CSSProperties = {
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [unread, setUnread] = useState(0);
+  const [unread, setUnread]   = useState(0);
+  const [myRole, setMyRole]   = useState<string>("editor");
 
   useEffect(() => {
     const load = () =>
@@ -39,6 +43,10 @@ export default function Sidebar() {
           if (Array.isArray(d)) setUnread(d.filter((i) => !i.read).length);
         })
         .catch(() => {});
+
+    fetch("/api/me").then((r) => r.json()).then((d) => {
+      if (d?.role) setMyRole(d.role);
+    }).catch(() => {});
 
     load();
     const t = setInterval(load, 60000);
@@ -85,7 +93,7 @@ export default function Sidebar() {
           Content
         </div>
 
-        {NAV.map(({ href, icon:Icon, label, badge }) => {
+        {NAV.filter((item) => !item.adminOnly || myRole === "admin").map(({ href, icon:Icon, label, badge }) => {
           const active = href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
           const showBadge = badge && unread > 0;
 

@@ -46,6 +46,7 @@ model ResearchProject {
 
 model Fellow {
   id          String   @id @default(cuid())
+  slug        String?  @unique
   name        String
   role        String
   bio         String
@@ -54,6 +55,8 @@ model Fellow {
   cohort      String?
   photoUrl    String?
   linkedinUrl String?
+  orcid       String?
+  twitter     String?
   active      Boolean  @default(true)
   featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
@@ -92,6 +95,7 @@ model AdminUser {
   email        String    @unique
   passwordHash String
   name         String
+  role         String    @default("admin")   // "admin" | "editor"
   createdAt    DateTime  @default(now())
   lastLoginAt  DateTime?
 }
@@ -99,4 +103,15 @@ model AdminUser {
 model Setting {
   key   String @id
   value String
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  country   String?
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
 }

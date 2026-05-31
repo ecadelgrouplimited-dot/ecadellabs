@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       data:  { lastLoginAt: new Date() },
     });
 
-    const token = signJWT({ id: user.id, email: user.email, name: user.name });
+    const token = signJWT({ id: user.id, email: user.email, name: user.name, role: user.role ?? "admin" });
     const response = NextResponse.json({ success: true, name: user.name });
     response.cookies.set(COOKIE_NAME, token, COOKIE_OPTIONS);
     return response;

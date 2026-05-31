@@ -4,6 +4,7 @@ import Image from "next/image";
 const RESEARCH_LINKS = [
   { href:"/research",     label:"Research Projects" },
   { href:"/publications", label:"Publications" },
+  { href:"/digest",       label:"Research Digest" },
   { href:"/fellows",      label:"Fellows" },
   { href:"/grants",       label:"Grants" },
   { href:"/partnerships", label:"Partners" },

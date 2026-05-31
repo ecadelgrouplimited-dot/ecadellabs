@@ -71,7 +71,7 @@ export default async function FellowsPage() {
                 const expertise = JSON.parse(f.expertise) as string[];
                 const initials  = f.name.split(" ").map((n) => n[0]).join("").slice(0,2);
                 return (
-                  <div key={f.id} style={{ backgroundColor:"#060608", padding:"2rem" }}>
+                  <Link key={f.id} href={`/fellows/${f.slug ?? f.id}`} style={{ backgroundColor:"#060608", padding:"2rem", display:"block", textDecoration:"none" }} className="hover:bg-deep group">
                     {/* Avatar + name */}
                     <div style={{ display:"flex", alignItems:"flex-start", gap:"1rem", marginBottom:"1.25rem" }}>
                       <div style={{ width:"40px", height:"40px", borderRadius:"50%", backgroundColor:"rgba(200,169,110,0.1)", border:"1px solid rgba(200,169,110,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"var(--font-display)", fontWeight:700, color:"#C8A96E", fontSize:"0.75rem", flexShrink:0 }}>
@@ -99,9 +99,10 @@ export default async function FellowsPage() {
                     )}
 
                     {f.linkedinUrl && (
-                      <a href={f.linkedinUrl} target="_blank" style={{ fontSize:"10px", color:"rgba(200,196,190,0.38)", textDecoration:"none" }}>LinkedIn ↗</a>
+                      <span style={{ fontSize:"10px", color:"rgba(200,196,190,0.38)" }}>LinkedIn ↗</span>
                     )}
-                  </div>
+                    <div style={{ fontSize:"10px", color:"rgba(200,169,110,0.55)", marginTop:"0.5rem" }}>View profile →</div>
+                  </Link>
                 );
               })}
             </div>

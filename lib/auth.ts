@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 
-const SECRET = process.env.JWT_SECRET ?? "dev-secret-change-in-production";
-const EXPIRES = Number(process.env.JWT_EXPIRES_IN ?? 28800); // 8 hours default
+const SECRET  = process.env.JWT_SECRET ?? "dev-secret-change-in-production";
+const EXPIRES = Number(process.env.JWT_EXPIRES_IN ?? 28800);
 
 export interface AdminPayload {
   id:    string;
   email: string;
   name:  string;
+  role:  string; // "admin" | "editor"
 }
 
 export function signJWT(payload: AdminPayload): string {

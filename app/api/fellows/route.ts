@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { slugify } from "@/lib/slug";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -14,18 +15,30 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    // Auto-generate a unique slug from the name
+    let base = slugify(body.name ?? "fellow");
+    let slug = base;
+    let n    = 1;
+    while (await prisma.fellow.findUnique({ where:{ slug } })) {
+      slug = `${base}-${n++}`;
+    }
+
     const fellow = await prisma.fellow.create({
       data: {
+        slug,
         name:        body.name,
-        role:        body.role ?? "research-fellow",
+        role:        body.role        ?? "research-fellow",
         bio:         body.bio,
         expertise:   JSON.stringify(body.expertise ?? []),
         institution: body.institution ?? null,
-        cohort:      body.cohort ?? null,
-        photoUrl:    body.photoUrl ?? null,
+        cohort:      body.cohort      ?? null,
+        photoUrl:    body.photoUrl    ?? null,
         linkedinUrl: body.linkedinUrl ?? null,
-        active:      body.active ?? true,
-        featured:    body.featured ?? false,
+        orcid:       body.orcid       ?? null,
+        twitter:     body.twitter     ?? null,
+        active:      body.active      ?? true,
+        featured:    body.featured    ?? false,
       },
     });
     return NextResponse.json(fellow, { status: 201 });
