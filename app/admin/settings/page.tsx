@@ -6,75 +6,74 @@ import { Save, CheckCircle2 } from "lucide-react";
 interface Publication { id:string; title:string; published:boolean; featured:boolean }
 interface Project     { id:string; title:string; published:boolean; featured:boolean }
 
+const INPUT: React.CSSProperties = {
+  width:"100%", backgroundColor:"rgba(255,255,255,0.04)",
+  border:"1px solid rgba(255,255,255,0.1)", color:"#F0EDE6",
+  padding:"0.625rem 0.875rem", fontSize:"0.875rem",
+  outline:"none", fontFamily:"inherit", borderRadius:"3px",
+  transition:"border-color 0.2s",
+};
+
+function SectionHeader({ title, sub }: { title:string; sub?:string }) {
+  return (
+    <div style={{ paddingBottom:"0.875rem", marginBottom:"1.25rem", borderBottom:"1px solid rgba(255,255,255,0.07)", display:"flex", alignItems:"baseline", gap:"0.75rem" }}>
+      <h2 style={{ fontFamily:"var(--font-display)", fontWeight:600, color:"#F0EDE6", fontSize:"0.9375rem" }}>{title}</h2>
+      {sub && <span style={{ fontSize:"0.75rem", color:"rgba(200,196,190,0.38)" }}>{sub}</span>}
+    </div>
+  );
+}
+
+function Label({ children }: { children:React.ReactNode }) {
+  return (
+    <label style={{ display:"block", fontSize:"9px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(200,196,190,0.42)", fontFamily:"monospace", marginBottom:"0.5rem" }}>
+      {children}
+    </label>
+  );
+}
+
 export default function SettingsAdmin() {
   const [saving, setSaving]   = useState(false);
   const [saved,  setSaved]    = useState(false);
   const [pubs,   setPubs]     = useState<Publication[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [form, setForm] = useState({
-    labsTitle:       "ECADEL LABS",
-    labsTagline:     "Research & Innovation Engine",
-    labsDescription: "The research and innovation engine of ECADEL GROUP LIMITED — advancing African intelligence infrastructure through original research, academic partnerships, and applied technology.",
-    contactEmail:    "ecadel@ecadelgroup.com",
-    researchDomains: "6",
-    activeProjects:  "3",
-    grantBodies:     "5",
-    featuredPubId:   "",
-    featuredProjectId: "",
+    labsTitle:"ECADEL LABS", labsTagline:"Research & Innovation Engine",
+    labsDescription:"The research and innovation engine of ECADEL GROUP LIMITED — advancing African intelligence infrastructure through original research, academic partnerships, and applied technology.",
+    contactEmail:"ecadel@ecadelgroup.com",
+    researchDomains:"6", activeProjects:"3", grantBodies:"5",
+    featuredPubId:"", featuredProjectId:"",
   });
 
   useEffect(() => {
-    // Load settings
     fetch("/api/settings").then((r) => r.json()).then((d) => {
       if (d && Object.keys(d).length > 0) setForm((f) => ({ ...f, ...d }));
     }).catch(() => {});
 
-    // Load publications + research for featured selectors
     Promise.all([
       fetch("/api/publications?admin=true").then((r) => r.json()),
       fetch("/api/research?admin=true").then((r) => r.json()),
-    ]).then(([pubData, projData]) => {
-      setPubs(Array.isArray(pubData) ? pubData : []);
-      setProjects(Array.isArray(projData) ? projData : []);
+    ]).then(([pd, rd]) => {
+      setPubs(Array.isArray(pd) ? pd : []);
+      setProjects(Array.isArray(rd) ? rd : []);
     }).catch(() => {});
   }, []);
 
-  const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const set = (k:string, v:string) => setForm((f) => ({ ...f, [k]:v }));
 
   async function handleSave() {
     setSaving(true);
     try {
-      // Save settings
-      await fetch("/api/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      await fetch("/api/settings",{ method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
 
-      // Update featured publication
       if (form.featuredPubId) {
-        await Promise.all(
-          pubs.map((p) =>
-            fetch(`/api/publications/${p.id}`, {
-              method:  "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body:    JSON.stringify({ featured: p.id === form.featuredPubId }),
-            })
-          )
-        );
+        await Promise.all(pubs.map((p) =>
+          fetch(`/api/publications/${p.id}`,{ method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ featured: p.id === form.featuredPubId }) })
+        ));
       }
-
-      // Update featured research project
       if (form.featuredProjectId) {
-        await Promise.all(
-          projects.map((p) =>
-            fetch(`/api/research/${p.id}`, {
-              method:  "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body:    JSON.stringify({ featured: p.id === form.featuredProjectId }),
-            })
-          )
-        );
+        await Promise.all(projects.map((p) =>
+          fetch(`/api/research/${p.id}`,{ method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ featured: p.id === form.featuredProjectId }) })
+        ));
       }
 
       setSaved(true);
@@ -82,52 +81,52 @@ export default function SettingsAdmin() {
     } finally { setSaving(false); }
   }
 
+  const focusBorder = (e: React.FocusEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => (e.target.style.borderColor = "rgba(200,169,110,0.5)");
+  const blurBorder  = (e: React.FocusEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => (e.target.style.borderColor = "rgba(255,255,255,0.1)");
+
   const currentFeaturedPub     = pubs.find((p) => p.featured)?.id     ?? "";
   const currentFeaturedProject = projects.find((p) => p.featured)?.id ?? "";
 
   return (
-    <div className="p-8 max-w-3xl">
-      <div className="mb-8">
-        <h1 className="font-display font-bold text-cream text-2xl mb-1">Settings</h1>
-        <p className="text-platinum/55 text-sm">Site-wide configuration for ecadellabs.cloud</p>
+    <div style={{ padding:"2rem 2.5rem", maxWidth:"680px" }}>
+
+      {/* Header */}
+      <div style={{ marginBottom:"2.5rem" }}>
+        <h1 style={{ fontFamily:"var(--font-display)", fontWeight:700, color:"#F0EDE6", fontSize:"1.375rem", marginBottom:"0.25rem" }}>Settings</h1>
+        <p style={{ fontSize:"0.8125rem", color:"rgba(200,196,190,0.42)" }}>Site-wide configuration for ecadellabs.cloud</p>
       </div>
 
-      <div className="space-y-8">
+      <div style={{ display:"flex", flexDirection:"column", gap:"2.5rem" }}>
+
         {/* Branding */}
-        <div>
-          <h2 className="font-display font-semibold text-cream text-base mb-4 pb-2 border-b border-white/7">Branding</h2>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Site Title</label>
-                <input value={form.labsTitle} onChange={(e) => set("labsTitle", e.target.value)} className="admin-input" />
-              </div>
-              <div>
-                <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Tagline</label>
-                <input value={form.labsTagline} onChange={(e) => set("labsTagline", e.target.value)} className="admin-input" />
-              </div>
+        <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", padding:"1.5rem", borderRadius:"4px" }}>
+          <SectionHeader title="Branding" />
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", marginBottom:"1rem" }}>
+            <div>
+              <Label>Site Title</Label>
+              <input value={form.labsTitle} onChange={(e) => set("labsTitle",e.target.value)} style={INPUT} onFocus={focusBorder} onBlur={blurBorder} />
             </div>
             <div>
-              <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Site Description (Meta)</label>
-              <textarea value={form.labsDescription} onChange={(e) => set("labsDescription", e.target.value)} rows={3} className="admin-input resize-none" />
+              <Label>Tagline</Label>
+              <input value={form.labsTagline} onChange={(e) => set("labsTagline",e.target.value)} style={INPUT} onFocus={focusBorder} onBlur={blurBorder} />
             </div>
+          </div>
+          <div>
+            <Label>Site Description (Meta)</Label>
+            <textarea value={form.labsDescription} onChange={(e) => set("labsDescription",e.target.value)} rows={3} style={{ ...INPUT, resize:"none" }} onFocus={focusBorder} onBlur={blurBorder} />
           </div>
         </div>
 
         {/* Featured Content */}
-        <div>
-          <h2 className="font-display font-semibold text-cream text-base mb-1 pb-2 border-b border-white/7">Featured Content</h2>
-          <p className="text-platinum/45 text-xs mb-4">Controls which publication and research project appear on the homepage hero.</p>
-          <div className="space-y-4">
+        <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", padding:"1.5rem", borderRadius:"4px" }}>
+          <SectionHeader title="Featured Content" sub="Controls which items appear on the homepage hero" />
+          <div style={{ display:"flex", flexDirection:"column", gap:"1rem" }}>
             <div>
-              <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">
-                Featured Publication {currentFeaturedPub && <span className="text-emerald/70">· Currently set</span>}
-              </label>
-              <select
-                value={form.featuredPubId || currentFeaturedPub}
-                onChange={(e) => set("featuredPubId", e.target.value)}
-                className="admin-input"
-              >
+              <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", marginBottom:"0.5rem" }}>
+                <Label>Featured Publication</Label>
+                {currentFeaturedPub && <span style={{ fontSize:"9px", color:"#4ab478", fontFamily:"monospace" }}>· currently set</span>}
+              </div>
+              <select value={form.featuredPubId || currentFeaturedPub} onChange={(e) => set("featuredPubId",e.target.value)} style={{ ...INPUT, cursor:"pointer" }} onFocus={focusBorder} onBlur={blurBorder}>
                 <option value="">— Keep current —</option>
                 {pubs.filter((p) => p.published).map((p) => (
                   <option key={p.id} value={p.id}>{p.title}{p.featured ? " ★" : ""}</option>
@@ -135,14 +134,11 @@ export default function SettingsAdmin() {
               </select>
             </div>
             <div>
-              <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">
-                Featured Research Project {currentFeaturedProject && <span className="text-emerald/70">· Currently set</span>}
-              </label>
-              <select
-                value={form.featuredProjectId || currentFeaturedProject}
-                onChange={(e) => set("featuredProjectId", e.target.value)}
-                className="admin-input"
-              >
+              <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", marginBottom:"0.5rem" }}>
+                <Label>Featured Research Project</Label>
+                {currentFeaturedProject && <span style={{ fontSize:"9px", color:"#4ab478", fontFamily:"monospace" }}>· currently set</span>}
+              </div>
+              <select value={form.featuredProjectId || currentFeaturedProject} onChange={(e) => set("featuredProjectId",e.target.value)} style={{ ...INPUT, cursor:"pointer" }} onFocus={focusBorder} onBlur={blurBorder}>
                 <option value="">— Keep current —</option>
                 {projects.filter((p) => p.published).map((p) => (
                   <option key={p.id} value={p.id}>{p.title}{p.featured ? " ★" : ""}</option>
@@ -153,36 +149,54 @@ export default function SettingsAdmin() {
         </div>
 
         {/* Contact */}
-        <div>
-          <h2 className="font-display font-semibold text-cream text-base mb-4 pb-2 border-b border-white/7">Contact</h2>
+        <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", padding:"1.5rem", borderRadius:"4px" }}>
+          <SectionHeader title="Contact" />
           <div>
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Contact Email</label>
-            <input value={form.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} className="admin-input" />
+            <Label>Contact Email</Label>
+            <input value={form.contactEmail} onChange={(e) => set("contactEmail",e.target.value)} style={INPUT} onFocus={focusBorder} onBlur={blurBorder} />
           </div>
         </div>
 
-        {/* Homepage stats */}
-        <div>
-          <h2 className="font-display font-semibold text-cream text-base mb-4 pb-2 border-b border-white/7">Homepage Stats</h2>
-          <div className="grid grid-cols-3 gap-4">
+        {/* Homepage Stats */}
+        <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", padding:"1.5rem", borderRadius:"4px" }}>
+          <SectionHeader title="Homepage Stats" sub="Numbers shown in the hero stats grid" />
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1rem" }}>
             {[
               { key:"researchDomains", label:"Research Domains" },
               { key:"activeProjects",  label:"Active Projects" },
-              { key:"grantBodies",     label:"Grant Bodies Targeted" },
+              { key:"grantBodies",     label:"Grant Bodies" },
             ].map((s) => (
               <div key={s.key}>
-                <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">{s.label}</label>
-                <input value={form[s.key as keyof typeof form]} onChange={(e) => set(s.key, e.target.value)} className="admin-input" />
+                <Label>{s.label}</Label>
+                <input value={form[s.key as keyof typeof form]} onChange={(e) => set(s.key,e.target.value)} style={INPUT} onFocus={focusBorder} onBlur={blurBorder} />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="pt-4 border-t border-white/7">
-          <button onClick={handleSave} disabled={saving}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gold text-obsidian text-sm font-semibold hover:bg-gold-dim transition-colors disabled:opacity-40">
-            {saved ? <><CheckCircle2 size={14} /> Saved</> : saving ? "Saving…" : <><Save size={14} /> Save Settings</>}
+        {/* Save */}
+        <div>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              display:"inline-flex", alignItems:"center", gap:"0.5rem",
+              padding:"0.75rem 1.5rem",
+              backgroundColor: saved ? "#4ab478" : "#C8A96E",
+              color:"#060608",
+              fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.875rem",
+              border:"none", cursor:saving ? "not-allowed" : "pointer",
+              borderRadius:"3px", opacity:saving ? 0.7 : 1,
+              transition:"all 0.2s",
+            }}
+          >
+            {saved ? <><CheckCircle2 size={15} /> Saved</> :
+             saving ? "Saving…" :
+             <><Save size={15} /> Save Settings</>}
           </button>
+          <span style={{ display:"block", marginTop:"0.625rem", fontSize:"10px", color:"rgba(200,196,190,0.28)" }}>
+            Changes apply immediately after saving.
+          </span>
         </div>
       </div>
     </div>
