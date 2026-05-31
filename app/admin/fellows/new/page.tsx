@@ -18,7 +18,7 @@ export default function NewFellowPage() {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     name:"", role:"research-fellow", bio:"", expertise:"",
-    institution:"", cohort:"2026", linkedinUrl:"", active:true, featured:false,
+    institution:"", cohort:"2026", linkedinUrl:"", orcid:"", twitter:"", active:true, featured:false,
   });
   const set = (k: string, v: string | boolean) => setForm((f) => ({ ...f, [k]:v }));
 
@@ -107,6 +107,16 @@ export default function NewFellowPage() {
               <div>
                 <FieldLabel hint="optional">LinkedIn URL</FieldLabel>
                 <input value={form.linkedinUrl} onChange={(e)=>set("linkedinUrl",e.target.value)} style={INPUT} placeholder="https://linkedin.com/in/…" onFocus={fieldFocus} onBlur={fieldBlur} />
+              </div>
+            </Row>
+            <Row>
+              <div>
+                <FieldLabel hint="e.g. 0000-0001-2345-6789">ORCID iD</FieldLabel>
+                <input value={form.orcid} onChange={(e)=>set("orcid",e.target.value)} style={INPUT} placeholder="0000-0000-0000-0000" onFocus={fieldFocus} onBlur={fieldBlur} />
+              </div>
+              <div>
+                <FieldLabel hint="without @">X / Twitter Handle</FieldLabel>
+                <input value={form.twitter} onChange={(e)=>set("twitter",e.target.value)} style={INPUT} placeholder="username" onFocus={fieldFocus} onBlur={fieldBlur} />
               </div>
             </Row>
             <div style={{ display:"flex", gap:"1.5rem" }}>

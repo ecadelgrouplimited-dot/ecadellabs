@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
-import { Mail, Users, Download } from "lucide-react";
+import Link from "next/link";
+import { Mail, Users, Download, Send } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -29,13 +30,18 @@ export default async function NewsletterAdmin() {
             {subscribers.length} total · {thisMonth} this month
           </p>
         </div>
-        <a
-          href={`data:text/csv;charset=utf-8,Email,Joined\n${subscribers.map((s) => `${s.email},${new Date(s.createdAt).toISOString().split("T")[0]}`).join("\n")}`}
-          download="ecadellabs-subscribers.csv"
-          style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.6rem 1.125rem", backgroundColor:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(200,196,190,0.65)", fontSize:"0.8125rem", textDecoration:"none", borderRadius:"3px" }}
-        >
-          <Download size={13} /> Export CSV
-        </a>
+        <div style={{ display:"flex", gap:"0.75rem" }}>
+          <Link href="/admin/newsletter/compose" style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.6rem 1.125rem", backgroundColor:"#C8A96E", color:"#060608", fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.8125rem", textDecoration:"none", borderRadius:"3px" }}>
+            <Send size={13} /> Compose &amp; Send
+          </Link>
+          <a
+            href={`data:text/csv;charset=utf-8,Email,Joined\n${subscribers.map((s) => `${s.email},${new Date(s.createdAt).toISOString().split("T")[0]}`).join("\n")}`}
+            download="ecadellabs-subscribers.csv"
+            style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.6rem 1.125rem", backgroundColor:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(200,196,190,0.65)", fontSize:"0.8125rem", textDecoration:"none", borderRadius:"3px" }}
+          >
+            <Download size={13} /> Export CSV
+          </a>
+        </div>
       </div>
 
       {/* Stats */}

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, FileText } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileText, Users } from "lucide-react";
 import type { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug:string }> }): Promise<Metadata> {
@@ -46,8 +46,21 @@ export default async function ResearchProjectPage({ params }: { params: Promise<
     "technical-report":"Technical Report","position-paper":"Position Paper",
   };
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type":    "ResearchProject",
+    "name":      project.title,
+    "description": project.problem,
+    "url":       `https://ecadellabs.cloud/research/${project.slug}`,
+    "status":    project.status,
+    "funder":    { "@type":"Organization", "name":"ECADEL LABS", "url":"https://ecadellabs.cloud" },
+    "researchArea": technologies.map((t) => ({ "@type":"DefinedTerm", "name":t })),
+    ...(partners.length > 0 ? { "contributor": partners.map((p) => ({ "@type":"Organization", "name":p })) } : {}),
+  };
+
   return (
     <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Header */}
       <div style={{ borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
         <div style={{ maxWidth:"64rem", margin:"0 auto", padding:"7rem 1.5rem 3rem" }}>
@@ -122,6 +135,19 @@ export default async function ResearchProjectPage({ params }: { params: Promise<
               )}
             </div>
           )}
+
+          {/* Collaborate CTA */}
+          <div style={{ padding:"1.75rem 2rem", backgroundColor:"rgba(200,169,110,0.04)", border:"1px solid rgba(200,169,110,0.15)", borderRadius:"3px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"1rem" }}>
+            <div>
+              <p style={{ fontSize:"9px", letterSpacing:"0.3em", textTransform:"uppercase", color:"rgba(200,169,110,0.7)", fontFamily:"monospace", marginBottom:"0.5rem" }}>Collaborate on this Research</p>
+              <p style={{ fontSize:"0.875rem", color:"rgba(200,196,190,0.58)", lineHeight:1.6 }}>
+                Researchers, institutions, and domain experts are welcome to propose a collaboration on this agenda item.
+              </p>
+            </div>
+            <Link href={`/research/${project.slug}/collaborate`} style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.75rem 1.5rem", backgroundColor:"#C8A96E", color:"#060608", fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.8125rem", textDecoration:"none", borderRadius:"3px", flexShrink:0 }}>
+              <Users size={14} /> Propose Collaboration
+            </Link>
+          </div>
 
           {/* Related Publications */}
           {relatedPubs.length > 0 && (

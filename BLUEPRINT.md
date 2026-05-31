@@ -645,28 +645,61 @@ cd /var/www/ecadellabs && ./deploy.sh
 - [ ] PDF export of publications
 - [ ] Research impact tracking (citation count, download tracking)
 
-### Phase 5 — Scale & Authority (Next Sprint)
+### Phase 5 — Scale & Authority ✓
 **Goal:** Establish ECADEL LABS as a credible, indexed African research institution.
 
-#### 5A — Reach
-- [ ] Google Scholar indexing — submit sitemap to Scholar, verify citation meta tags
-- [ ] ORCID integration for fellow profiles (researcher IDs)
-- [ ] DOI registration for publications (DataCite or CrossRef)
-- [ ] Academic newsletter — HTML email blast to subscribers from admin
-- [ ] Research digest landing page (`/digest`) — curated research round-up
+#### 5A — Reach ✓
+- [x] Research digest landing page (`/digest`) — curated two-column research briefing
+- [x] ORCID + Twitter/X fields on fellow profiles (schema + display)
+- [x] Sitemap updated to include `/digest`, `/fellows/[slug]`, `/apply`
+- [ ] Google Scholar indexing — submit sitemap, verify citation meta tags (operational)
+- [ ] DOI registration for publications via DataCite/CrossRef (operational)
+- [ ] Academic newsletter HTML blast from admin to subscribers
 
-#### 5B — Fellows & Collaboration
-- [ ] Fellow application form (`/fellows/apply`) — structured application
-- [ ] Fellow profile public pages (`/fellows/[slug]`) — individual researcher pages
-- [ ] Research collaboration proposals (`/research/[slug]/collaborate`)
-- [ ] ECADEL LABS Slack/Discord invite for community
+#### 5B — Fellows & Collaboration ✓
+- [x] Fellow profile public pages (`/fellows/[slug]`) — bio, expertise, publications, research
+- [x] Fellow application via `/apply` (fellowship type)
+- [x] Research collaboration via `/apply` (research type)
+- [x] Research collaboration quick-link on research project pages
+- [ ] Individual fellow apply page (`/fellows/apply`) — fellow-specific application
+- [ ] ECADEL LABS community channel invite
 
-#### 5C — Infrastructure
-- [ ] Multi-admin with role-based access (editor vs admin vs viewer)
-- [ ] Automated backups of SQLite database to object storage
+#### 5C — Infrastructure ✓
+- [x] Multi-admin with role-based access (admin vs editor) — route protection in proxy.ts
+- [x] Admin users management page (`/admin/users`) — add, change role, remove
+- [x] Privacy-respecting page view analytics (`/admin/analytics`) — no cookies, no PII
+- [ ] Automated SQLite database backups to object storage
 - [ ] Uptime monitoring and alerting
-- [ ] Performance analytics — privacy-respecting page view tracking
-- [ ] PDF publication generation (server-side via Playwright)
+- [ ] PDF publication export (server-side)
+
+### Phase 6 — Depth & Reach (Current Sprint)
+**Goal:** Deep academic credibility, content tools, and operational automation.
+
+#### 6A — Admin Content Tools
+- [ ] Newsletter HTML composer — write and send to all subscribers from admin panel
+- [ ] Admin: ORCID and Twitter fields in fellow edit forms (schema done, forms need update)
+- [ ] Admin: bulk publish/unpublish on Publications and Research list pages
+- [ ] Admin: publication word count and estimated read time display on list
+- [ ] Admin: search/filter on all list pages
+
+#### 6B — Frontend Depth
+- [ ] Individual research project collaboration form (`/research/[slug]/collaborate`)
+- [ ] Publication collections / reading lists (group by topic)
+- [ ] Research project progress updates feed (changelog per project)
+- [ ] Public API v2 — include fellows and partnerships endpoints
+
+#### 6C — SEO & Discovery
+- [ ] Update sitemap to include all new routes dynamically
+- [ ] OpenGraph image for homepage and fellowship/digest pages
+- [ ] Google Scholar verification (`google-site-verification` meta)
+- [ ] Structured data (JSON-LD) on research project pages (ScholarlyResearch type)
+- [ ] Canonical URLs across all pages
+
+#### 6D — Infrastructure
+- [ ] VPS automated daily SQLite backup script (cron + rsync or S3)
+- [ ] PM2 startup confirmation — ensure auto-restart on reboot is locked in
+- [ ] Error monitoring (simple email alert on unhandled 500s)
+- [ ] Admin: database size and last deploy info on dashboard
 
 ---
 

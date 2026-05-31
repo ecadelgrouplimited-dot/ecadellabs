@@ -20,13 +20,13 @@ export default function EditFellowPage({ params }: { params: Promise<{ id:string
   const [loaded, setLoaded] = useState(false);
   const [form, setForm] = useState({
     name:"", role:"research-fellow", bio:"", expertise:"",
-    institution:"", cohort:"", linkedinUrl:"", active:true, featured:false,
+    institution:"", cohort:"", linkedinUrl:"", orcid:"", twitter:"", active:true, featured:false,
   });
   const set = (k: string, v: string | boolean) => setForm((f) => ({ ...f, [k]:v }));
 
   useEffect(() => {
     fetch(`/api/fellows/${id}`).then((r)=>r.json()).then((d) => {
-      setForm({ name:d.name, role:d.role, bio:d.bio, expertise:(JSON.parse(d.expertise??"[]") as string[]).join(", "), institution:d.institution??"", cohort:d.cohort??"", linkedinUrl:d.linkedinUrl??"", active:d.active, featured:d.featured });
+      setForm({ name:d.name, role:d.role, bio:d.bio, expertise:(JSON.parse(d.expertise??"[]") as string[]).join(", "), institution:d.institution??"", cohort:d.cohort??"", linkedinUrl:d.linkedinUrl??"", orcid:d.orcid??"", twitter:d.twitter??"", active:d.active, featured:d.featured });
       setLoaded(true);
     });
   }, [id]);
@@ -113,6 +113,16 @@ export default function EditFellowPage({ params }: { params: Promise<{ id:string
               <div>
                 <FieldLabel>LinkedIn</FieldLabel>
                 <input value={form.linkedinUrl} onChange={(e)=>set("linkedinUrl",e.target.value)} style={INPUT} onFocus={fieldFocus} onBlur={fieldBlur} />
+              </div>
+            </Row>
+            <Row>
+              <div>
+                <FieldLabel hint="e.g. 0000-0001-2345-6789">ORCID iD</FieldLabel>
+                <input value={form.orcid} onChange={(e)=>set("orcid",e.target.value)} style={INPUT} placeholder="0000-0000-0000-0000" onFocus={fieldFocus} onBlur={fieldBlur} />
+              </div>
+              <div>
+                <FieldLabel hint="without @">X / Twitter</FieldLabel>
+                <input value={form.twitter} onChange={(e)=>set("twitter",e.target.value)} style={INPUT} placeholder="username" onFocus={fieldFocus} onBlur={fieldBlur} />
               </div>
             </Row>
             <div style={{ display:"flex", gap:"1.5rem" }}>

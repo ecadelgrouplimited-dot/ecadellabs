@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import { FileText, FlaskConical, Users, Building2, MessageSquare, Plus, ExternalLink, Mail } from "lucide-react";
+import { FileText, FlaskConical, Users, Building2, MessageSquare, Plus, ExternalLink, Mail, Database, Server } from "lucide-react";
+import SystemStats from "./SystemStats";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +125,9 @@ export default async function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* ── System status ────────────────────────────────────────────── */}
+      <SystemStats />
 
       {/* ── Recent inquiries ──────────────────────────────────────────── */}
       <div>
