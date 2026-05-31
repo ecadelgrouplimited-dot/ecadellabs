@@ -151,6 +151,18 @@ body {
   margin-bottom: 0.75rem;
 }
 
+/* Admin table row hover — use these in Server Components (no JS handlers) */
+.admin-row { transition: background-color 0.15s; }
+.admin-row:hover { background-color: rgba(255,255,255,0.025); }
+
+/* Admin action link colours via CSS — safe in server components */
+.a-edit { color: rgba(200,196,190,0.38); text-decoration: none; transition: color 0.15s; }
+.a-edit:hover { color: #C8A96E; }
+.a-view { color: rgba(200,196,190,0.38); text-decoration: none; transition: color 0.15s; }
+.a-view:hover { color: #5B8FBF; }
+.a-del  { color: rgba(200,196,190,0.25); background: none; border: none; cursor: pointer; transition: color 0.15s; padding: 0.25rem; }
+.a-del:hover  { color: #e05555; }
+
 /* ── Markdown prose styles ─────────────────────────────────────────────────── */
 .prose {
   color: #C8C4BE;
