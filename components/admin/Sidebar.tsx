@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, FlaskConical, Users,
-  Building2, MessageSquare, Settings, LogOut, ExternalLink,
+  Building2, MessageSquare, Settings, LogOut, ExternalLink, Mail,
 } from "lucide-react";
 
 const NAV = [
@@ -16,6 +16,7 @@ const NAV = [
   { href:"/admin/fellows",     icon:Users,            label:"Fellows" },
   { href:"/admin/partnerships",icon:Building2,        label:"Partnerships" },
   { href:"/admin/inquiries",   icon:MessageSquare,    label:"Inquiries", badge:true },
+  { href:"/admin/newsletter",  icon:Mail,             label:"Newsletter" },
   { href:"/admin/settings",    icon:Settings,         label:"Settings" },
 ];
 

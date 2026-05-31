@@ -620,29 +620,53 @@ cd /var/www/ecadellabs && ./deploy.sh
 - [ ] First university partnership formalised — Makerere University target
 - [ ] First grant application submitted using ecadellabs.cloud as institutional reference
 
-### Phase 4 — Platform (Current Sprint)
+### Phase 4 — Platform ✓
 **Goal:** Open data, extended reach, and operational intelligence.
 
 #### 4A — Open Data & API ✓
 - [x] Public research API (`/api/public/publications`, `/api/public/research`) — JSON, CORS, versioned
 - [x] API documentation page (`/api-docs`) — usage examples, endpoint reference, attribution note
-- [ ] RSS feed for publications (`/feed.xml`) — for academic aggregators and RSS readers
+- [x] RSS feed (`/feed.xml`) — publications feed for academic aggregators and RSS readers
 - [ ] Public dataset downloads (CSV/JSON exports of research agenda)
 
 #### 4B — Extended Admin ✓
-- [x] Admin dashboard: inquiry breakdown by type with bar chart (research/fellowship/grant/newsletter)
+- [x] Admin dashboard: inquiry breakdown by type with bar chart
 - [x] Admin settings: featured content selectors — pin specific pub/project to homepage hero
-- [ ] Admin: newsletter subscriber list view (filter inquiries by type=newsletter)
-- [ ] Admin: bulk publish/unpublish on list pages (multi-select + action)
+- [x] Admin: all form pages rebuilt with MarkdownEditor, FormField components, inline styles
+- [x] Admin: newsletter subscriber admin view (`/admin/newsletter`)
+- [ ] Admin: bulk publish/unpublish on list pages
 - [ ] Admin: activity log (who changed what, when)
 
-#### 4C — Platform Features (Next Sprint)
-- [ ] RSS feed (`/feed.xml`) for academic RSS readers and Google Scholar
-- [ ] Research application portal (structured proposal submission form with PDF attachment)
-- [ ] Multi-admin: invite team members with editor role (read + publish, no settings access)
-- [ ] Performance analytics (lightweight page view tracking, privacy-respecting)
-- [ ] PDF export of publications (server-side generation)
+#### 4C — Platform Features ✓
+- [x] Research application portal (`/apply`) — structured proposal form, stores as Inquiry
+- [x] Admin: all CRUD forms rebuilt — MarkdownEditor toolbar, live preview, section cards
+- [ ] Multi-admin: invite team members with editor role
+- [ ] Performance analytics (lightweight, privacy-respecting)
+- [ ] PDF export of publications
 - [ ] Research impact tracking (citation count, download tracking)
+
+### Phase 5 — Scale & Authority (Next Sprint)
+**Goal:** Establish ECADEL LABS as a credible, indexed African research institution.
+
+#### 5A — Reach
+- [ ] Google Scholar indexing — submit sitemap to Scholar, verify citation meta tags
+- [ ] ORCID integration for fellow profiles (researcher IDs)
+- [ ] DOI registration for publications (DataCite or CrossRef)
+- [ ] Academic newsletter — HTML email blast to subscribers from admin
+- [ ] Research digest landing page (`/digest`) — curated research round-up
+
+#### 5B — Fellows & Collaboration
+- [ ] Fellow application form (`/fellows/apply`) — structured application
+- [ ] Fellow profile public pages (`/fellows/[slug]`) — individual researcher pages
+- [ ] Research collaboration proposals (`/research/[slug]/collaborate`)
+- [ ] ECADEL LABS Slack/Discord invite for community
+
+#### 5C — Infrastructure
+- [ ] Multi-admin with role-based access (editor vs admin vs viewer)
+- [ ] Automated backups of SQLite database to object storage
+- [ ] Uptime monitoring and alerting
+- [ ] Performance analytics — privacy-respecting page view tracking
+- [ ] PDF publication generation (server-side via Playwright)
 
 ---
 

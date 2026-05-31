@@ -31,6 +31,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ECADEL LABS", url: "https://ecadellabs.cloud" }],
   creator: "ECADEL GROUP LIMITED",
+  alternates: {
+    types: { "application/rss+xml": "https://ecadellabs.cloud/feed.xml" },
+  },
   openGraph: {
     title: "ECADEL LABS — Research & Innovation Engine",
     description: "Advancing African intelligence infrastructure through original research and applied technology.",

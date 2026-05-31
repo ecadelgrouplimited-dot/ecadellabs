@@ -7,6 +7,7 @@ const RESEARCH_LINKS = [
   { href:"/fellows",      label:"Fellows" },
   { href:"/grants",       label:"Grants" },
   { href:"/partnerships", label:"Partners" },
+  { href:"/apply",        label:"Apply" },
 ];
 
 const INSTITUTION_LINKS = [
