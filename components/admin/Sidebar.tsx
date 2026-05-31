@@ -5,127 +5,157 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  LayoutDashboard, FileText, FlaskConical, Users, Building2,
-  MessageSquare, Settings, LogOut, ChevronRight,
+  LayoutDashboard, FileText, FlaskConical, Users,
+  Building2, MessageSquare, Settings, LogOut, ExternalLink,
 } from "lucide-react";
 
-const navItems = [
-  { href: "/admin",             icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/admin/publications", icon: FileText,        label: "Publications" },
-  { href: "/admin/research",    icon: FlaskConical,     label: "Research" },
-  { href: "/admin/fellows",     icon: Users,            label: "Fellows" },
-  { href: "/admin/partnerships",icon: Building2,        label: "Partnerships" },
-  { href: "/admin/inquiries",   icon: MessageSquare,    label: "Inquiries", badge: true },
-  { href: "/admin/settings",    icon: Settings,         label: "Settings" },
+const NAV = [
+  { href:"/admin",             icon:LayoutDashboard, label:"Dashboard" },
+  { href:"/admin/publications", icon:FileText,        label:"Publications" },
+  { href:"/admin/research",    icon:FlaskConical,     label:"Research" },
+  { href:"/admin/fellows",     icon:Users,            label:"Fellows" },
+  { href:"/admin/partnerships",icon:Building2,        label:"Partnerships" },
+  { href:"/admin/inquiries",   icon:MessageSquare,    label:"Inquiries", badge:true },
+  { href:"/admin/settings",    icon:Settings,         label:"Settings" },
 ];
+
+const ITEM: React.CSSProperties = {
+  display:"flex", alignItems:"center", justifyContent:"space-between",
+  padding:"0.625rem 0.875rem", fontSize:"0.875rem", fontWeight:500,
+  textDecoration:"none", borderRadius:"4px",
+  transition:"all 0.15s", marginBottom:"2px",
+};
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
-    fetch("/api/inquiries")
-      .then((r) => r.json())
-      .then((data: { read:boolean }[]) => {
-        if (Array.isArray(data)) setUnread(data.filter((i) => !i.read).length);
-      })
-      .catch(() => {});
-
-    const interval = setInterval(() => {
+    const load = () =>
       fetch("/api/inquiries")
         .then((r) => r.json())
-        .then((data: { read:boolean }[]) => {
-          if (Array.isArray(data)) setUnread(data.filter((i) => !i.read).length);
+        .then((d: { read:boolean }[]) => {
+          if (Array.isArray(d)) setUnread(d.filter((i) => !i.read).length);
         })
         .catch(() => {});
-    }, 60000); // refresh every minute
 
-    return () => clearInterval(interval);
+    load();
+    const t = setInterval(load, 60000);
+    return () => clearInterval(t);
   }, []);
 
-  async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+  async function logout() {
+    await fetch("/api/auth/logout", { method:"POST" });
     window.location.href = "/admin/login";
   }
 
   return (
-    <aside className="w-60 min-h-screen flex flex-col bg-deep border-r border-white/7">
-      {/* Logo */}
-      <div className="px-5 py-4 border-b border-white/7">
-        <Link href="/" className="flex items-center gap-2.5 group" target="_blank">
+    <aside style={{
+      width:"232px", flexShrink:0,
+      backgroundColor:"#0A0C12",
+      borderRight:"1px solid rgba(255,255,255,0.07)",
+      display:"flex", flexDirection:"column",
+      minHeight:"100vh",
+    }}>
+
+      {/* ── Logo ─────────────────────────────────────────── */}
+      <div style={{ padding:"1.25rem 1.25rem 1rem", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
+        <Link href="/" target="_blank" style={{ display:"flex", alignItems:"center", gap:"0.625rem", textDecoration:"none" }}>
           <Image
             src="/logos/ecadel_labs_transparent_1600.png"
             alt="ECADEL LABS"
-            width={36} height={36}
-            className="opacity-85 group-hover:opacity-100 transition-opacity"
+            width={32} height={32}
+            style={{ opacity:0.85 }}
           />
           <div>
-            <div className="text-cream font-display font-bold text-sm tracking-wide leading-none">
-              ECADEL <span className="text-gold">LABS</span>
+            <div style={{ fontFamily:"var(--font-display)", fontWeight:700, color:"#F0EDE6", fontSize:"0.8125rem", letterSpacing:"0.03em", lineHeight:1 }}>
+              ECADEL <span style={{ color:"#C8A96E" }}>LABS</span>
             </div>
-            <div className="text-platinum/45 text-[9px] tracking-[0.18em] uppercase font-mono mt-0.5">
+            <div style={{ fontSize:"7px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(200,196,190,0.35)", fontFamily:"monospace", marginTop:"3px" }}>
               Admin Panel
             </div>
           </div>
         </Link>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-4">
-        <div className="text-[9px] tracking-[0.25em] uppercase text-muted font-mono mb-3 px-3">
+      {/* ── Navigation ───────────────────────────────────── */}
+      <nav style={{ flex:1, padding:"1rem 0.75rem 0.75rem", overflowY:"auto" }}>
+        <div style={{ fontSize:"8px", letterSpacing:"0.25em", textTransform:"uppercase", color:"rgba(200,196,190,0.28)", fontFamily:"monospace", padding:"0 0.5rem", marginBottom:"0.5rem" }}>
           Content
         </div>
-        <ul className="space-y-0.5">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active =
-              item.href === "/admin"
-                ? pathname === "/admin"
-                : pathname.startsWith(item.href);
-            const showBadge = item.badge && unread > 0;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-sm text-sm transition-all duration-150 group ${
-                    active
-                      ? "bg-gold/10 text-gold border-l-2 border-gold pl-2.5"
-                      : "text-platinum/68 hover:text-cream hover:bg-white/4 border-l-2 border-transparent"
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Icon size={14} className={active ? "text-gold" : "text-platinum/50 group-hover:text-cream"} />
-                    <span className="font-medium">{item.label}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    {showBadge && (
-                      <span style={{ fontSize:"9px", padding:"1px 6px", backgroundColor:"rgba(212,162,76,0.2)", color:"#D4A24C", border:"1px solid rgba(212,162,76,0.3)", borderRadius:"2px" }}>
-                        {unread}
-                      </span>
-                    )}
-                    {active && <ChevronRight size={12} className="text-gold/60" />}
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+
+        {NAV.map(({ href, icon:Icon, label, badge }) => {
+          const active = href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+          const showBadge = badge && unread > 0;
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              style={{
+                ...ITEM,
+                backgroundColor: active ? "rgba(200,169,110,0.1)"  : "transparent",
+                color:           active ? "#C8A96E"                 : "rgba(200,196,190,0.62)",
+                borderLeft:     `2px solid ${active ? "#C8A96E" : "transparent"}`,
+                paddingLeft:     active ? "0.75rem" : "0.875rem",
+              }}
+              onMouseOver={(e) => {
+                if (!active) {
+                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)";
+                  e.currentTarget.style.color = "#F0EDE6";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (!active) {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = "rgba(200,196,190,0.62)";
+                }
+              }}
+            >
+              <div style={{ display:"flex", alignItems:"center", gap:"0.625rem" }}>
+                <Icon
+                  size={15}
+                  color={active ? "#C8A96E" : "rgba(200,196,190,0.45)"}
+                />
+                <span>{label}</span>
+              </div>
+              {showBadge && (
+                <span style={{
+                  fontSize:"9px", padding:"1px 6px",
+                  backgroundColor:"rgba(212,162,76,0.18)",
+                  color:"#D4A24C",
+                  border:"1px solid rgba(212,162,76,0.3)",
+                  borderRadius:"2px", fontFamily:"monospace",
+                }}>
+                  {unread}
+                </span>
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
-      {/* Footer */}
-      <div className="px-3 py-4 border-t border-white/7">
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-muted hover:text-ruby hover:bg-ruby/5 rounded-sm transition-all duration-150"
+      {/* ── Footer ───────────────────────────────────────── */}
+      <div style={{ padding:"0.75rem", borderTop:"1px solid rgba(255,255,255,0.07)" }}>
+        <Link
+          href="/"
+          target="_blank"
+          style={{ display:"flex", alignItems:"center", gap:"0.5rem", padding:"0.5rem 0.625rem", fontSize:"0.75rem", color:"rgba(200,196,190,0.4)", textDecoration:"none", borderRadius:"4px", marginBottom:"2px", transition:"all 0.15s" }}
+          onMouseOver={(e) => { e.currentTarget.style.color = "rgba(200,169,110,0.8)"; e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.03)"; }}
+          onMouseOut={(e)  => { e.currentTarget.style.color = "rgba(200,196,190,0.4)"; e.currentTarget.style.backgroundColor = "transparent"; }}
         >
-          <LogOut size={14} />
+          <ExternalLink size={12} />
+          View live site
+        </Link>
+        <button
+          onClick={logout}
+          style={{ display:"flex", alignItems:"center", gap:"0.5rem", padding:"0.5rem 0.625rem", fontSize:"0.75rem", color:"rgba(200,196,190,0.4)", background:"none", border:"none", cursor:"pointer", borderRadius:"4px", width:"100%", transition:"all 0.15s" }}
+          onMouseOver={(e) => { e.currentTarget.style.color = "#e05555"; e.currentTarget.style.backgroundColor = "rgba(224,85,85,0.06)"; }}
+          onMouseOut={(e)  => { e.currentTarget.style.color = "rgba(200,196,190,0.4)"; e.currentTarget.style.backgroundColor = "transparent"; }}
+        >
+          <LogOut size={12} />
           Sign out
         </button>
-        <div className="mt-3 px-3">
-          <Link href="/" target="_blank" className="text-[10px] text-platinum/38 hover:text-gold transition-colors duration-150 flex items-center gap-1">
-            ↗ View live site
-          </Link>
-        </div>
       </div>
     </aside>
   );

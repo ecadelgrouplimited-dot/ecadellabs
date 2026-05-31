@@ -1,10 +1,10 @@
-import Sidebar from "@/components/admin/Sidebar";
+import ConditionalSidebar from "./ConditionalSidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-obsidian">
-      <Sidebar />
-      <main className="flex-1 overflow-auto">
+    <div style={{ display:"flex", minHeight:"100vh", backgroundColor:"#060608" }}>
+      <ConditionalSidebar />
+      <main style={{ flex:1, overflow:"auto", minWidth:0 }}>
         {children}
       </main>
     </div>
