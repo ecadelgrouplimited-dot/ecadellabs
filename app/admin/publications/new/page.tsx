@@ -98,8 +98,11 @@ export default function NewPublicationPage() {
                 <input value={form.tags} onChange={(e)=>set("tags",e.target.value)} style={INPUT} placeholder="AI, Africa, Research" onFocus={fieldFocus} onBlur={fieldBlur} />
               </div>
               <div>
-                <FieldLabel hint="optional">PDF URL</FieldLabel>
-                <input value={form.pdfUrl} onChange={(e)=>set("pdfUrl",e.target.value)} style={INPUT} placeholder="https://…" onFocus={fieldFocus} onBlur={fieldBlur} />
+                <FieldLabel hint="Google Drive, PDF, or any URL">Document URL</FieldLabel>
+                <input value={form.pdfUrl} onChange={(e)=>set("pdfUrl",e.target.value)} style={INPUT} placeholder="https://drive.google.com/file/d/…/view or direct PDF URL" onFocus={fieldFocus} onBlur={fieldBlur} />
+                <p style={{ fontSize:"9px", color:"rgba(200,196,190,0.28)", marginTop:"0.375rem" }}>
+                  Paste a Google Drive share link, direct PDF URL, or any accessible document URL. The ECADEL LABS Reader will embed it automatically.
+                </p>
               </div>
             </Row>
             <label style={{ display:"flex", alignItems:"center", gap:"0.625rem", cursor:"pointer", userSelect:"none" }}>
