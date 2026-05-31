@@ -1,21 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Globe } from "lucide-react";
+import { Plus, Trash2, Globe, ToggleLeft, ToggleRight } from "lucide-react";
 
 interface Partnership {
-  id: string; institution: string; type: string;
-  country: string; description: string; website?: string; active: boolean;
+  id:string; institution:string; type:string;
+  country:string; description:string; website?:string; active:boolean;
 }
 
 const TYPES = ["university","research-body","government","ngo","development-bank"];
+const TYPE_LABEL: Record<string,string> = { "university":"University","research-body":"Research Body","government":"Government","ngo":"NGO","development-bank":"Development Bank" };
+
+const INPUT: React.CSSProperties = { width:"100%", backgroundColor:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:"#F0EDE6", padding:"0.625rem 0.875rem", fontSize:"0.875rem", outline:"none", fontFamily:"inherit", borderRadius:"3px" };
 
 export default function PartnershipsAdmin() {
-  const [items, setItems]     = useState<Partnership[]>([]);
-  const [adding, setAdding]   = useState(false);
-  const [saving, setSaving]   = useState(false);
-  const [form, setForm] = useState({ institution: "", type: "university", country: "", description: "", website: "" });
-  const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const [items,   setItems]   = useState<Partnership[]>([]);
+  const [adding,  setAdding]  = useState(false);
+  const [saving,  setSaving]  = useState(false);
+  const [form, setForm] = useState({ institution:"", type:"university", country:"", description:"", website:"" });
+  const set = (k:string, v:string) => setForm((f) => ({ ...f, [k]:v }));
 
   const load = () => fetch("/api/partnerships?admin=true").then((r) => r.json()).then(setItems);
   useEffect(() => { load(); }, []);
@@ -23,95 +26,100 @@ export default function PartnershipsAdmin() {
   async function handleAdd() {
     setSaving(true);
     try {
-      await fetch("/api/partnerships", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      await fetch("/api/partnerships",{ method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(form) });
       setAdding(false);
-      setForm({ institution: "", type: "university", country: "", description: "", website: "" });
+      setForm({ institution:"", type:"university", country:"", description:"", website:"" });
       load();
     } finally { setSaving(false); }
   }
 
-  async function handleDelete(id: string) {
+  async function handleDelete(id:string) {
     if (!confirm("Remove this partnership?")) return;
-    await fetch(`/api/partnerships/${id}`, { method: "DELETE" });
+    await fetch(`/api/partnerships/${id}`,{ method:"DELETE" });
     load();
   }
 
-  async function toggleActive(id: string, active: boolean) {
-    await fetch(`/api/partnerships/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ active: !active }) });
+  async function toggleActive(id:string, active:boolean) {
+    await fetch(`/api/partnerships/${id}`,{ method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ active:!active }) });
     load();
   }
 
   return (
-    <div className="p-8 max-w-4xl">
-      <div className="flex items-center justify-between mb-8">
+    <div style={{ padding:"2rem 2.5rem" }}>
+      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:"2rem" }}>
         <div>
-          <h1 className="font-display font-bold text-cream text-2xl mb-1">Partnerships</h1>
-          <p className="text-platinum/55 text-sm">{items.length} total</p>
+          <h1 style={{ fontFamily:"var(--font-display)", fontWeight:700, color:"#F0EDE6", fontSize:"1.375rem", marginBottom:"0.25rem" }}>Partnerships</h1>
+          <p style={{ fontSize:"0.8125rem", color:"rgba(200,196,190,0.45)" }}>{items.length} total · {items.filter((i) => i.active).length} active</p>
         </div>
-        <button onClick={() => setAdding(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-gold text-obsidian text-sm font-display font-semibold hover:bg-gold-dim transition-colors">
+        <button onClick={() => setAdding(true)} style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.6rem 1.125rem", backgroundColor:"#C8A96E", color:"#060608", fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.8125rem", border:"none", cursor:"pointer", borderRadius:"3px" }}>
           <Plus size={14} /> Add Partner
         </button>
       </div>
 
       {/* Add form */}
       {adding && (
-        <div className="bg-carbon border border-white/10 p-6 mb-6 space-y-4">
-          <h3 className="font-display font-semibold text-cream text-sm mb-4">Add New Partnership</h3>
-          <div className="grid grid-cols-2 gap-4">
+        <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.1)", borderTop:"2px solid #C8A96E", padding:"1.5rem", marginBottom:"1.5rem", borderRadius:"4px" }}>
+          <h3 style={{ fontFamily:"var(--font-display)", fontWeight:600, color:"#F0EDE6", fontSize:"0.9375rem", marginBottom:"1.25rem" }}>New Partnership</h3>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem", marginBottom:"1rem" }}>
             <div>
-              <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Institution *</label>
-              <input value={form.institution} onChange={(e) => set("institution", e.target.value)} className="admin-input" placeholder="Makerere University" />
+              <label style={{ display:"block", fontSize:"9px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(200,196,190,0.42)", fontFamily:"monospace", marginBottom:"0.5rem" }}>Institution *</label>
+              <input value={form.institution} onChange={(e) => set("institution", e.target.value)} style={INPUT} placeholder="Makerere University" onFocus={(e) => (e.target.style.borderColor = "rgba(200,169,110,0.5)")} onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")} />
             </div>
             <div>
-              <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Type</label>
-              <select value={form.type} onChange={(e) => set("type", e.target.value)} className="admin-input">
+              <label style={{ display:"block", fontSize:"9px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(200,196,190,0.42)", fontFamily:"monospace", marginBottom:"0.5rem" }}>Type</label>
+              <select value={form.type} onChange={(e) => set("type", e.target.value)} style={{ ...INPUT, cursor:"pointer" }}>
                 {TYPES.map((t) => <option key={t} value={t}>{t.replace(/-/g," ")}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Country *</label>
-              <input value={form.country} onChange={(e) => set("country", e.target.value)} className="admin-input" placeholder="Uganda" />
+              <label style={{ display:"block", fontSize:"9px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(200,196,190,0.42)", fontFamily:"monospace", marginBottom:"0.5rem" }}>Country *</label>
+              <input value={form.country} onChange={(e) => set("country", e.target.value)} style={INPUT} placeholder="Uganda" onFocus={(e) => (e.target.style.borderColor = "rgba(200,169,110,0.5)")} onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")} />
             </div>
             <div>
-              <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Website</label>
-              <input value={form.website} onChange={(e) => set("website", e.target.value)} className="admin-input" placeholder="https://…" />
+              <label style={{ display:"block", fontSize:"9px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(200,196,190,0.42)", fontFamily:"monospace", marginBottom:"0.5rem" }}>Website</label>
+              <input value={form.website} onChange={(e) => set("website", e.target.value)} style={INPUT} placeholder="https://…" onFocus={(e) => (e.target.style.borderColor = "rgba(200,169,110,0.5)")} onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")} />
             </div>
           </div>
-          <div>
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-muted font-mono mb-1.5">Description *</label>
-            <textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} className="admin-input resize-none" />
+          <div style={{ marginBottom:"1rem" }}>
+            <label style={{ display:"block", fontSize:"9px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(200,196,190,0.42)", fontFamily:"monospace", marginBottom:"0.5rem" }}>Description *</label>
+            <textarea value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} style={{ ...INPUT, resize:"none" }} placeholder="Describe the partnership…" onFocus={(e) => (e.target.style.borderColor = "rgba(200,169,110,0.5)")} onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")} />
           </div>
-          <div className="flex items-center gap-3">
-            <button onClick={handleAdd} disabled={saving || !form.institution || !form.description}
-              className="px-4 py-2 bg-gold text-obsidian text-sm font-semibold hover:bg-gold-dim disabled:opacity-40">
-              {saving ? "Saving…" : "Add"}
+          <div style={{ display:"flex", gap:"0.75rem" }}>
+            <button onClick={handleAdd} disabled={saving || !form.institution || !form.description} style={{ padding:"0.6rem 1.25rem", backgroundColor:saving ? "rgba(200,169,110,0.6)" : "#C8A96E", color:"#060608", fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.8125rem", border:"none", cursor:"pointer", borderRadius:"3px", opacity: (!form.institution || !form.description) ? 0.5 : 1 }}>
+              {saving ? "Adding…" : "Add"}
             </button>
-            <button onClick={() => setAdding(false)} className="px-4 py-2 text-sm text-muted hover:text-platinum/68">Cancel</button>
+            <button onClick={() => setAdding(false)} style={{ padding:"0.6rem 1rem", backgroundColor:"transparent", color:"rgba(200,196,190,0.5)", fontSize:"0.8125rem", border:"1px solid rgba(255,255,255,0.08)", cursor:"pointer", borderRadius:"3px" }}>Cancel</button>
           </div>
         </div>
       )}
 
-      <div className="space-y-2">
-        {items.map((item) => (
-          <div key={item.id} className="flex items-center gap-4 bg-carbon border border-white/7 px-5 py-4">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-sm text-cream font-medium">{item.institution}</span>
-                <span className="text-[9px] bg-white/5 text-muted px-1.5 py-0.5 rounded-sm">{item.type.replace(/-/g," ")}</span>
-                <span className="text-[9px] text-platinum/38">{item.country}</span>
+      {/* List */}
+      <div style={{ display:"flex", flexDirection:"column", gap:"1px", backgroundColor:"rgba(255,255,255,0.05)", borderRadius:"4px", overflow:"hidden" }}>
+        {items.length === 0 ? (
+          <div style={{ padding:"3rem", textAlign:"center", color:"rgba(200,196,190,0.32)", fontSize:"0.875rem", backgroundColor:"#0A0C12" }}>No partnerships yet.</div>
+        ) : items.map((item) => (
+          <div key={item.id} style={{ display:"flex", alignItems:"center", gap:"1rem", padding:"1rem 1.5rem", backgroundColor:"#0A0C12" }}>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", marginBottom:"0.25rem" }}>
+                <span style={{ fontSize:"0.9375rem", fontWeight:500, color:"#F0EDE6" }}>{item.institution}</span>
+                <span style={{ fontSize:"9px", padding:"1px 6px", backgroundColor:"rgba(255,255,255,0.04)", color:"rgba(200,196,190,0.42)", borderRadius:"2px" }}>{TYPE_LABEL[item.type] ?? item.type}</span>
+                <span style={{ fontSize:"9px", color:"rgba(200,196,190,0.32)", fontFamily:"monospace" }}>{item.country}</span>
               </div>
-              <p className="text-xs text-platinum/45 truncate">{item.description}</p>
+              <p style={{ fontSize:"0.8125rem", color:"rgba(200,196,190,0.45)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{item.description}</p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", flexShrink:0 }}>
               {item.website && (
-                <a href={item.website} target="_blank" className="text-platinum/38 hover:text-sapphire transition-colors"><Globe size={13} /></a>
+                <a href={item.website} target="_blank" style={{ color:"rgba(200,196,190,0.35)", textDecoration:"none" }} onMouseOver={(e) => (e.currentTarget.style.color = "#5B8FBF")} onMouseOut={(e) => (e.currentTarget.style.color = "rgba(200,196,190,0.35)")}>
+                  <Globe size={14} />
+                </a>
               )}
-              <button onClick={() => toggleActive(item.id, item.active)}
-                className={`text-[9px] px-2 py-1 border rounded-sm transition-colors ${item.active ? "border-emerald/30 text-emerald hover:bg-emerald/5" : "border-white/10 text-muted hover:border-white/20"}`}>
+              <button onClick={() => toggleActive(item.id, item.active)} style={{ display:"flex", alignItems:"center", gap:"0.375rem", padding:"0.375rem 0.75rem", fontSize:"10px", border:`1px solid ${item.active ? "rgba(74,180,120,0.3)" : "rgba(255,255,255,0.1)"}`, color:item.active ? "#4ab478" : "rgba(200,196,190,0.4)", backgroundColor:"transparent", cursor:"pointer", borderRadius:"2px", transition:"all 0.15s" }}>
+                {item.active ? <ToggleRight size={13} /> : <ToggleLeft size={13} />}
                 {item.active ? "Active" : "Inactive"}
               </button>
-              <button onClick={() => handleDelete(item.id)} className="text-platinum/25 hover:text-ruby transition-colors"><Trash2 size={13} /></button>
+              <button onClick={() => handleDelete(item.id)} style={{ color:"rgba(200,196,190,0.25)", background:"none", border:"none", cursor:"pointer", padding:"0.25rem" }} onMouseOver={(e) => (e.currentTarget.style.color = "#e05555")} onMouseOut={(e) => (e.currentTarget.style.color = "rgba(200,196,190,0.25)")}>
+                <Trash2 size={14} />
+              </button>
             </div>
           </div>
         ))}

@@ -1,61 +1,96 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import { Plus, Edit } from "lucide-react";
+import { Plus, Edit2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
+const ROLES: Record<string,string> = {
+  "research-fellow":"Research Fellow","resident":"Resident",
+  "collaborator":"Collaborator","advisor":"Advisor",
+};
+
+const COL = {
+  name:        { flex:"1 1 0", minWidth:0 },
+  role:        { width:"150px", flexShrink:0 },
+  institution: { width:"180px", flexShrink:0 },
+  status:      { width:"80px",  flexShrink:0 },
+  actions:     { width:"48px",  flexShrink:0, display:"flex", justifyContent:"flex-end" },
+};
+
 export default async function FellowsAdmin() {
-  const fellows = await prisma.fellow.findMany({ orderBy: { name: "asc" } });
+  const fellows = await prisma.fellow.findMany({ orderBy:{ name:"asc" } });
+  const active = fellows.filter((f) => f.active).length;
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div style={{ padding:"2rem 2.5rem" }}>
+      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:"2rem" }}>
         <div>
-          <h1 className="font-display font-bold text-cream text-2xl mb-1">Fellows & Researchers</h1>
-          <p className="text-platinum/55 text-sm">{fellows.length} total</p>
+          <h1 style={{ fontFamily:"var(--font-display)", fontWeight:700, color:"#F0EDE6", fontSize:"1.375rem", marginBottom:"0.25rem" }}>
+            Fellows &amp; Researchers
+          </h1>
+          <p style={{ fontSize:"0.8125rem", color:"rgba(200,196,190,0.45)" }}>
+            {fellows.length} total · {active} active
+          </p>
         </div>
-        <Link href="/admin/fellows/new"
-          className="flex items-center gap-2 px-4 py-2.5 bg-gold text-obsidian text-sm font-display font-semibold hover:bg-gold-dim transition-colors">
+        <Link href="/admin/fellows/new" style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.6rem 1.125rem", backgroundColor:"#C8A96E", color:"#060608", fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.8125rem", textDecoration:"none", borderRadius:"3px" }}>
           <Plus size={14} /> Add Fellow
         </Link>
       </div>
 
-      <div className="bg-carbon border border-white/7">
-        <div className="grid grid-cols-12 gap-4 px-6 py-3 border-b border-white/7 text-[9px] tracking-[0.2em] uppercase text-muted font-mono">
-          <span className="col-span-4">Name</span>
-          <span className="col-span-3">Role</span>
-          <span className="col-span-3">Institution</span>
-          <span className="col-span-1">Status</span>
-          <span className="col-span-1"></span>
+      <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"4px", overflow:"hidden" }}>
+        {/* Header */}
+        <div style={{ display:"flex", alignItems:"center", gap:"1rem", padding:"0.625rem 1.5rem", borderBottom:"1px solid rgba(255,255,255,0.07)", backgroundColor:"rgba(255,255,255,0.02)" }}>
+            <div style={{ ...COL.name,        fontSize:"8px", letterSpacing:"0.22em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace" }}>Name</div>
+          <div style={{ ...COL.role,        fontSize:"8px", letterSpacing:"0.22em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace" }}>Role</div>
+          <div style={{ ...COL.institution, fontSize:"8px", letterSpacing:"0.22em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace" }}>Institution</div>
+          <div style={{ ...COL.status,      fontSize:"8px", letterSpacing:"0.22em", textTransform:"uppercase", color:"rgba(200,196,190,0.32)", fontFamily:"monospace" }}>Status</div>
+          <div style={{ ...COL.actions }} />
         </div>
+
         {fellows.length === 0 ? (
-          <div className="px-6 py-12 text-center text-platinum/38 text-sm">
-            No fellows yet. <Link href="/admin/fellows/new" className="text-gold hover:underline">Add the first one →</Link>
+          <div style={{ padding:"3rem", textAlign:"center", color:"rgba(200,196,190,0.32)", fontSize:"0.875rem" }}>
+            No fellows yet.{" "}
+            <Link href="/admin/fellows/new" style={{ color:"#C8A96E", textDecoration:"none" }}>Add the first one →</Link>
           </div>
-        ) : fellows.map((f) => (
-          <div key={f.id} className="grid grid-cols-12 gap-4 px-6 py-4 items-center border-t border-white/5 hover:bg-graphite/30 transition-colors">
-            <div className="col-span-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-gold text-[10px] font-display font-bold shrink-0">
-                  {f.name.split(" ").map((n) => n[0]).join("").slice(0,2)}
+        ) : fellows.map((f, i) => {
+          const initials = f.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
+          return (
+            <div
+              key={f.id}
+              style={{ display:"flex", alignItems:"center", gap:"1rem", padding:"0.875rem 1.5rem", borderBottom: i < fellows.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none", transition:"background-color 0.15s" }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.02)")}
+              onMouseOut={(e)  => (e.currentTarget.style.backgroundColor = "transparent")}
+            >
+              <div style={{ ...COL.name, display:"flex", alignItems:"center", gap:"0.75rem" }}>
+                <div style={{ width:"32px", height:"32px", borderRadius:"50%", backgroundColor:"rgba(200,169,110,0.1)", border:"1px solid rgba(200,169,110,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"10px", fontWeight:700, color:"#C8A96E", flexShrink:0, fontFamily:"var(--font-display)" }}>
+                  {initials}
                 </div>
-                <span className="text-sm text-cream font-medium truncate">{f.name}</span>
+                <span style={{ fontSize:"0.875rem", fontWeight:500, color:"#F0EDE6", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{f.name}</span>
+              </div>
+
+              <div style={{ ...COL.role, fontSize:"0.8125rem", color:"rgba(200,196,190,0.55)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                {ROLES[f.role] ?? f.role}
+              </div>
+
+              <div style={{ ...COL.institution, fontSize:"0.8125rem", color:"rgba(200,196,190,0.38)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                {f.institution ?? "—"}
+              </div>
+
+              <div style={COL.status}>
+                <span style={{ fontSize:"9px", padding:"2px 8px", borderRadius:"2px", backgroundColor: f.active ? "rgba(74,180,120,0.12)" : "rgba(255,255,255,0.04)", color: f.active ? "#4ab478" : "rgba(200,196,190,0.38)" }}>
+                  {f.active ? "Active" : "Inactive"}
+                </span>
+              </div>
+
+              <div style={COL.actions}>
+                <Link href={`/admin/fellows/${f.id}`} style={{ color:"rgba(200,196,190,0.38)", textDecoration:"none" }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "#C8A96E")} onMouseOut={(e) => (e.currentTarget.style.color = "rgba(200,196,190,0.38)")}>
+                  <Edit2 size={14} />
+                </Link>
               </div>
             </div>
-            <div className="col-span-3 text-xs text-platinum/55 truncate">{f.role.replace(/-/g," ")}</div>
-            <div className="col-span-3 text-xs text-platinum/38 truncate">{f.institution ?? "—"}</div>
-            <div className="col-span-1">
-              <span className={`text-[9px] px-1.5 py-0.5 rounded-sm ${f.active ? "bg-emerald/10 text-emerald" : "bg-white/5 text-muted"}`}>
-                {f.active ? "Active" : "Inactive"}
-              </span>
-            </div>
-            <div className="col-span-1 flex justify-end">
-              <Link href={`/admin/fellows/${f.id}`} className="text-platinum/38 hover:text-gold transition-colors">
-                <Edit size={13} />
-              </Link>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

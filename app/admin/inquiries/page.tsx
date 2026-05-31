@@ -1,117 +1,153 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Mail, Archive, MailOpen } from "lucide-react";
+import { Mail, Archive, Check, Inbox } from "lucide-react";
 
-interface Inquiry {
-  id: string; name: string; email: string; organisation?: string;
-  type: string; message: string; read: boolean; archived: boolean;
-  createdAt: string;
-}
+interface Inquiry { id:string; name:string; email:string; organisation?:string; type:string; message:string; read:boolean; archived:boolean; createdAt:string; }
 
-const TYPE_LABELS: Record<string, string> = {
-  research: "Research", fellowship: "Fellowship", partnership: "Partnership",
-  grant: "Grant", general: "General",
-};
+const TYPE_LABELS: Record<string,string> = { research:"Research", fellowship:"Fellowship", partnership:"Partnership", grant:"Grant", general:"General", newsletter:"Newsletter" };
+const TYPE_COLORS: Record<string,string> = { research:"#5B8FBF", fellowship:"#C8A96E", partnership:"#4ab478", grant:"#D4A24C", newsletter:"#a78bfa", general:"rgba(200,196,190,0.5)" };
 
 export default function InquiriesAdmin() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-  const [selected, setSelected]   = useState<Inquiry | null>(null);
-  const [loading, setLoading]     = useState(true);
+  const [selected,  setSelected]  = useState<Inquiry|null>(null);
+  const [loading,   setLoading]   = useState(true);
 
   const load = () => {
     setLoading(true);
-    fetch("/api/inquiries").then((r) => r.json()).then((d) => { setInquiries(d); setLoading(false); });
+    fetch("/api/inquiries").then((r) => r.json()).then((d) => { setInquiries(Array.isArray(d) ? d : []); setLoading(false); });
   };
-
   useEffect(() => { load(); }, []);
 
-  async function markRead(id: string) {
-    await fetch(`/api/inquiries/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ read: true }) });
-    setInquiries((prev) => prev.map((i) => i.id === id ? { ...i, read: true } : i));
+  async function markRead(id:string) {
+    await fetch(`/api/inquiries/${id}`,{ method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ read:true }) });
+    setInquiries((prev) => prev.map((i) => i.id === id ? {...i, read:true} : i));
   }
 
-  async function archive(id: string) {
-    await fetch(`/api/inquiries/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ archived: true }) });
+  async function archive(id:string) {
+    await fetch(`/api/inquiries/${id}`,{ method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ archived:true }) });
     setInquiries((prev) => prev.filter((i) => i.id !== id));
     if (selected?.id === id) setSelected(null);
   }
 
-  const openInquiry = (inq: Inquiry) => {
+  function open(inq:Inquiry) {
     setSelected(inq);
     if (!inq.read) markRead(inq.id);
-  };
+  }
+
+  const unread = inquiries.filter((i) => !i.read).length;
 
   return (
-    <div className="flex h-screen">
-      {/* List */}
-      <div className="w-80 shrink-0 border-r border-white/7 flex flex-col">
-        <div className="px-6 py-4 border-b border-white/7">
-          <h1 className="font-display font-bold text-cream text-lg">Inquiries</h1>
-          <p className="text-platinum/42 text-xs mt-0.5">{inquiries.filter((i) => !i.read).length} unread</p>
+    <div style={{ display:"flex", height:"calc(100vh - 0px)", overflow:"hidden" }}>
+      {/* Left — list */}
+      <div style={{ width:"300px", flexShrink:0, borderRight:"1px solid rgba(255,255,255,0.07)", display:"flex", flexDirection:"column", backgroundColor:"#0A0C12" }}>
+        <div style={{ padding:"1.5rem 1.5rem 1rem", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
+          <h1 style={{ fontFamily:"var(--font-display)", fontWeight:700, color:"#F0EDE6", fontSize:"1.125rem", marginBottom:"0.25rem" }}>Inquiries</h1>
+          <p style={{ fontSize:"0.75rem", color:"rgba(200,196,190,0.42)" }}>
+            {loading ? "Loading…" : `${unread} unread · ${inquiries.length} total`}
+          </p>
         </div>
-        <div className="flex-1 overflow-y-auto divide-y divide-white/5">
+
+        <div style={{ flex:1, overflowY:"auto" }}>
           {loading ? (
-            <div className="p-6 text-platinum/38 text-sm text-center">Loading…</div>
+            <div style={{ padding:"2rem", textAlign:"center", color:"rgba(200,196,190,0.32)", fontSize:"0.875rem" }}>Loading…</div>
           ) : inquiries.length === 0 ? (
-            <div className="p-6 text-platinum/38 text-sm text-center">No inquiries.</div>
+            <div style={{ padding:"2rem", textAlign:"center" }}>
+              <Inbox size={24} color="rgba(200,196,190,0.2)" style={{ margin:"0 auto 0.75rem" }} />
+              <p style={{ color:"rgba(200,196,190,0.32)", fontSize:"0.875rem" }}>No inquiries yet.</p>
+            </div>
           ) : inquiries.map((inq) => (
-            <button key={inq.id} onClick={() => openInquiry(inq)}
-              className={`w-full text-left px-4 py-4 hover:bg-graphite/40 transition-colors ${selected?.id === inq.id ? "bg-graphite/50" : ""}`}>
-              <div className="flex items-start gap-2 mb-1">
-                {!inq.read && <span className="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 shrink-0" />}
-                <span className={`text-sm font-medium truncate ${!inq.read ? "text-cream" : "text-platinum/68"}`}>{inq.name}</span>
-                <span className="text-[9px] bg-white/5 text-muted px-1.5 py-0.5 rounded-sm shrink-0 ml-auto">
+            <button
+              key={inq.id}
+              onClick={() => open(inq)}
+              style={{
+                display:"block", width:"100%", textAlign:"left",
+                padding:"0.875rem 1.25rem",
+                borderBottom:"1px solid rgba(255,255,255,0.04)",
+                backgroundColor: selected?.id === inq.id ? "rgba(200,169,110,0.06)" : "transparent",
+                borderLeft: selected?.id === inq.id ? "2px solid #C8A96E" : "2px solid transparent",
+                cursor:"pointer", transition:"all 0.15s", border:"none",
+              }}
+              onMouseOver={(e) => { if (selected?.id !== inq.id) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.03)"; }}
+              onMouseOut={(e)  => { if (selected?.id !== inq.id) e.currentTarget.style.backgroundColor = "transparent"; }}
+            >
+              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:"0.5rem", marginBottom:"0.25rem" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:"0.5rem", minWidth:0 }}>
+                  {!inq.read && <span style={{ width:"6px", height:"6px", borderRadius:"50%", backgroundColor:"#C8A96E", flexShrink:0 }} />}
+                  <span style={{ fontSize:"0.875rem", fontWeight:!inq.read ? 600 : 400, color: !inq.read ? "#F0EDE6" : "rgba(200,196,190,0.65)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                    {inq.name}
+                  </span>
+                </div>
+                <span style={{ fontSize:"9px", padding:"1px 6px", borderRadius:"2px", color:TYPE_COLORS[inq.type] ?? "rgba(200,196,190,0.45)", backgroundColor:`${TYPE_COLORS[inq.type] ?? "rgba(200,196,190,0.45)"}15`, flexShrink:0 }}>
                   {TYPE_LABELS[inq.type] ?? inq.type}
                 </span>
               </div>
-              <div className="text-[10px] text-platinum/38 truncate pl-3.5">{inq.organisation ?? inq.email}</div>
-              <div className="text-xs text-platinum/30 truncate pl-3.5 mt-0.5">{inq.message.slice(0, 55)}…</div>
+              <p style={{ fontSize:"11px", color:"rgba(200,196,190,0.38)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", paddingLeft: !inq.read ? "14px" : 0 }}>
+                {inq.organisation ?? inq.email}
+              </p>
+              <p style={{ fontSize:"11px", color:"rgba(200,196,190,0.28)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", marginTop:"2px", paddingLeft: !inq.read ? "14px" : 0 }}>
+                {inq.message.slice(0, 55)}…
+              </p>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Detail */}
-      <div className="flex-1 flex flex-col">
+      {/* Right — detail */}
+      <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0 }}>
         {selected ? (
-          <div className="h-full overflow-y-auto">
-            <div className="sticky top-0 flex items-center justify-between px-8 py-4 bg-obsidian border-b border-white/7 z-10">
-              <div>
-                <h2 className="font-display font-semibold text-cream text-base">{selected.name}</h2>
-                <div className="text-xs text-platinum/42 mt-0.5">
+          <>
+            {/* Detail header */}
+            <div style={{ padding:"1.25rem 2rem", borderBottom:"1px solid rgba(255,255,255,0.07)", display:"flex", alignItems:"center", justifyContent:"space-between", backgroundColor:"#0A0C12" }}>
+              <div style={{ minWidth:0 }}>
+                <h2 style={{ fontFamily:"var(--font-display)", fontWeight:600, color:"#F0EDE6", fontSize:"1rem", marginBottom:"2px" }}>{selected.name}</h2>
+                <p style={{ fontSize:"0.75rem", color:"rgba(200,196,190,0.42)" }}>
                   {selected.email}{selected.organisation ? ` · ${selected.organisation}` : ""}
-                </div>
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <a href={`mailto:${selected.email}?subject=Re: ${TYPE_LABELS[selected.type]} — ECADEL LABS`}
-                  className="flex items-center gap-1.5 px-3 py-2 text-xs text-gold border border-gold/30 hover:bg-gold/5 transition-colors">
-                  <Mail size={12} /> Reply via Email
+              <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", flexShrink:0 }}>
+                {selected.read && (
+                  <span style={{ display:"flex", alignItems:"center", gap:"0.25rem", fontSize:"10px", color:"#4ab478" }}>
+                    <Check size={11} /> Read
+                  </span>
+                )}
+                <a href={`mailto:${selected.email}?subject=Re: ${TYPE_LABELS[selected.type] ?? selected.type} — ECADEL LABS`}
+                  style={{ display:"inline-flex", alignItems:"center", gap:"0.375rem", padding:"0.5rem 0.875rem", fontSize:"0.75rem", color:"#C8A96E", border:"1px solid rgba(200,169,110,0.3)", textDecoration:"none", borderRadius:"3px" }}
+                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "rgba(200,169,110,0.06)")}
+                  onMouseOut={(e)  => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
+                  <Mail size={12} /> Reply
                 </a>
                 <button onClick={() => archive(selected.id)}
-                  className="flex items-center gap-1.5 px-3 py-2 text-xs text-muted hover:text-platinum/68 border border-white/8 hover:border-white/15 transition-all">
+                  style={{ display:"inline-flex", alignItems:"center", gap:"0.375rem", padding:"0.5rem 0.875rem", fontSize:"0.75rem", color:"rgba(200,196,190,0.5)", border:"1px solid rgba(255,255,255,0.08)", backgroundColor:"transparent", cursor:"pointer", borderRadius:"3px" }}
+                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)")}
+                  onMouseOut={(e)  => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
                   <Archive size={12} /> Archive
                 </button>
               </div>
             </div>
-            <div className="px-8 py-6">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-[9px] tracking-[0.15em] uppercase text-gold bg-gold/8 border border-gold/20 px-2 py-1">
+
+            {/* Detail body */}
+            <div style={{ flex:1, overflowY:"auto", padding:"2rem" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:"0.75rem", marginBottom:"1.5rem" }}>
+                <span style={{ fontSize:"9px", padding:"3px 10px", borderRadius:"2px", letterSpacing:"0.12em", textTransform:"uppercase", color:TYPE_COLORS[selected.type] ?? "rgba(200,196,190,0.45)", border:`1px solid ${TYPE_COLORS[selected.type] ?? "rgba(200,196,190,0.2)"}40`, backgroundColor:`${TYPE_COLORS[selected.type] ?? "rgba(200,196,190,0.1)"}12` }}>
                   {TYPE_LABELS[selected.type] ?? selected.type}
                 </span>
-                <span className="text-[10px] text-muted font-mono">
-                  {new Date(selected.createdAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short" })}
+                <span style={{ fontSize:"10px", color:"rgba(200,196,190,0.35)", fontFamily:"monospace" }}>
+                  {new Date(selected.createdAt).toLocaleString("en-GB",{ dateStyle:"long", timeStyle:"short" })}
                 </span>
-                {selected.read && <span className="flex items-center gap-1 text-[10px] text-emerald"><MailOpen size={10} /> Read</span>}
               </div>
-              <div className="bg-carbon border border-white/7 p-6">
-                <p className="text-platinum/72 text-sm leading-relaxed whitespace-pre-wrap">{selected.message}</p>
+
+              <div style={{ backgroundColor:"#0A0C12", border:"1px solid rgba(255,255,255,0.07)", padding:"1.5rem", borderRadius:"4px" }}>
+                <p style={{ fontSize:"0.9375rem", color:"rgba(200,196,190,0.75)", lineHeight:1.8, whiteSpace:"pre-wrap" }}>{selected.message}</p>
               </div>
             </div>
-          </div>
+          </>
         ) : (
-          <div className="h-full flex items-center justify-center text-platinum/30 text-sm">
-            Select an inquiry to read
+          <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"0.75rem" }}>
+            <Inbox size={32} color="rgba(200,196,190,0.15)" />
+            <p style={{ color:"rgba(200,196,190,0.28)", fontSize:"0.875rem" }}>Select an inquiry to read</p>
           </div>
         )}
       </div>
