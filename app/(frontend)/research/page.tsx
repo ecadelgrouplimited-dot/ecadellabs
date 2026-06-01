@@ -1,11 +1,27 @@
 import { prisma } from "@/lib/db";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { ChevronRight, ArrowRight } from "lucide-react";
 import { Suspense } from "react";
 import FilterBar from "@/components/ui/FilterBar";
 import type { Metadata } from "next";
 
-export const revalidate = 180  // 3-min ISR cache;
+export const dynamic = "force-dynamic";
+
+const getProjects = unstable_cache(
+  async (status?: string) => {
+    const [projects, totalCount] = await Promise.all([
+      prisma.researchProject.findMany({
+        where:   { published:true, ...(status ? { status } : {}) },
+        orderBy: [{ featured:"desc" },{ createdAt:"desc" }],
+      }),
+      prisma.researchProject.count({ where:{ published:true } }),
+    ]);
+    return { projects, totalCount };
+  },
+  ["research-list"],
+  { revalidate: 180, tags:["research"] }
+);
 
 export const metadata: Metadata = {
   title: "Research Agenda",
@@ -24,12 +40,7 @@ const STATUS_OPTIONS = [
 export default async function ResearchPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
 
-  const projects = await prisma.researchProject.findMany({
-    where: { published:true, ...(status ? { status } : {}) },
-    orderBy: [{ featured:"desc" },{ createdAt:"desc" }],
-  });
-
-  const totalCount = await prisma.researchProject.count({ where:{ published:true } });
+  const { projects, totalCount } = await getProjects(status);
 
   return (
     <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>

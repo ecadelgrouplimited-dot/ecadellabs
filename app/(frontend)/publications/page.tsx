@@ -1,11 +1,28 @@
 import { prisma } from "@/lib/db";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { Download, ArrowRight } from "lucide-react";
 import { Suspense } from "react";
 import FilterBar from "@/components/ui/FilterBar";
 import type { Metadata } from "next";
 
-export const revalidate = 180  // 3-min ISR cache;
+export const dynamic = "force-dynamic";
+
+// Cache DB queries for 3 min — page stays dynamic (searchParams), data doesn't
+const getPublications = unstable_cache(
+  async (category?: string) => {
+    const [pubs, totalCount] = await Promise.all([
+      prisma.publication.findMany({
+        where:   { published:true, ...(category ? { category } : {}) },
+        orderBy: [{ featured:"desc" },{ publishedAt:"desc" }],
+      }),
+      prisma.publication.count({ where:{ published:true } }),
+    ]);
+    return { pubs, totalCount };
+  },
+  ["publications-list"],
+  { revalidate: 180, tags:["publications"] }
+);
 
 export const metadata: Metadata = {
   title: "Publications",
@@ -27,12 +44,7 @@ const CAT_OPTIONS = [
 export default async function PublicationsPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const { category } = await searchParams;
 
-  const pubs = await prisma.publication.findMany({
-    where: { published:true, ...(category ? { category } : {}) },
-    orderBy: [{ featured:"desc" },{ publishedAt:"desc" }],
-  });
-
-  const totalCount = await prisma.publication.count({ where:{ published:true } });
+  const { pubs, totalCount } = await getPublications(category);
 
   return (
     <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>

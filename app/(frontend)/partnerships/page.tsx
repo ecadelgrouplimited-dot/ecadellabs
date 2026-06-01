@@ -1,11 +1,27 @@
 import { prisma } from "@/lib/db";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { Globe, ArrowRight } from "lucide-react";
 import { Suspense } from "react";
 import FilterBar from "@/components/ui/FilterBar";
 import type { Metadata } from "next";
 
-export const revalidate = 300  // 5-min ISR cache;
+export const dynamic = "force-dynamic";
+
+const getPartners = unstable_cache(
+  async (type?: string) => {
+    const [partners, totalCount] = await Promise.all([
+      prisma.partnership.findMany({
+        where:   { active:true, ...(type ? { type } : {}) },
+        orderBy: [{ featured:"desc" },{ institution:"asc" }],
+      }),
+      prisma.partnership.count({ where:{ active:true } }),
+    ]);
+    return { partners, totalCount };
+  },
+  ["partnerships-list"],
+  { revalidate: 600, tags:["partnerships"] }
+);
 
 export const metadata: Metadata = {
   title: "Partnerships",
@@ -28,12 +44,7 @@ const TYPE_OPTIONS = [
 export default async function PartnershipsPage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
   const { type } = await searchParams;
 
-  const partners = await prisma.partnership.findMany({
-    where: { active:true, ...(type ? { type } : {}) },
-    orderBy: [{ featured:"desc" },{ institution:"asc" }],
-  });
-
-  const totalCount = await prisma.partnership.count({ where:{ active:true } });
+  const { partners, totalCount } = await getPartners(type);
 
   return (
     <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>
