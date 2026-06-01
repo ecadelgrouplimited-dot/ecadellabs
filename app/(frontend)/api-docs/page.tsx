@@ -11,6 +11,60 @@ const BASE = "https://ecadellabs.cloud/api/public";
 const ENDPOINTS = [
   {
     method: "GET",
+    path:   "/api/public/fellows",
+    desc:   "Returns all active fellows and researchers.",
+    params: [
+      { name:"role",  type:"string", desc:"Filter by role: research-fellow | resident | collaborator | advisor" },
+      { name:"limit", type:"number", desc:"Results per page (default: 20, max: 100)" },
+      { name:"page",  type:"number", desc:"Page number (default: 1)" },
+    ],
+    example: `${BASE}/fellows`,
+    response: `{
+  "data": [
+    {
+      "id":          "cm...",
+      "slug":        "wilson-ecaat",
+      "name":        "Wilson Ecaat",
+      "role":        "research-fellow",
+      "bio":         "Wilson Ecaat is the founder...",
+      "expertise":   ["AI Architecture", "Offline-First Systems"],
+      "institution": "ECADEL GROUP LIMITED",
+      "cohort":      "2026",
+      "featured":    true,
+      "profileUrl":  "https://ecadellabs.cloud/fellows/wilson-ecaat"
+    }
+  ],
+  "meta": { "total": 1, "page": 1, "limit": 20, "pages": 1 }
+}`,
+  },
+  {
+    method: "GET",
+    path:   "/api/public/partnerships",
+    desc:   "Returns all active partner institutions.",
+    params: [
+      { name:"type",  type:"string", desc:"Filter: university | development-bank | research-body | government | ngo" },
+      { name:"limit", type:"number", desc:"Results per page (default: 20, max: 100)" },
+      { name:"page",  type:"number", desc:"Page number (default: 1)" },
+    ],
+    example: `${BASE}/partnerships?type=university`,
+    response: `{
+  "data": [
+    {
+      "id":          "cm...",
+      "institution": "Makerere University",
+      "slug":        "makerere-university",
+      "type":        "university",
+      "description": "Uganda's premier research university...",
+      "country":     "Uganda",
+      "website":     "https://www.mak.ac.ug",
+      "featured":    true
+    }
+  ],
+  "meta": { "total": 2, "page": 1, "limit": 20, "pages": 1 }
+}`,
+  },
+  {
+    method: "GET",
     path:   "/api/public/publications",
     desc:   "Returns all published publications.",
     params: [
@@ -87,10 +141,12 @@ export default function ApiDocsPage() {
           </p>
           <div style={{ display:"flex", gap:"0.5rem", flexWrap:"wrap" }}>
             {[
-              { label:"Base URL", value:BASE },
-              { label:"Version",  value:"v1" },
-              { label:"Format",   value:"JSON" },
-              { label:"Auth",     value:"None required" },
+              { label:"Base URL",   value:BASE },
+              { label:"Version",    value:"v1" },
+              { label:"Format",     value:"JSON" },
+              { label:"Auth",       value:"None required" },
+              { label:"Endpoints",  value:"4 (publications, research, fellows, partnerships)" },
+              { label:"Health",     value:"GET /api/health" },
             ].map((m) => (
               <div key={m.label} style={{ padding:"0.375rem 0.875rem", backgroundColor:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)" }}>
                 <span style={{ fontSize:"9px", color:"rgba(200,196,190,0.35)", fontFamily:"monospace", marginRight:"0.375rem" }}>{m.label}:</span>

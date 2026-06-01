@@ -4,9 +4,10 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, FlaskConical } from "lucide-react";
 import { marked } from "marked";
 import type { Metadata } from "next";
-import EcadelReader from "@/components/frontend/EcadelReader";
-import SocialShare  from "@/components/frontend/SocialShare";
-import PrintButton  from "@/components/ui/PrintButton";
+import EcadelReader  from "@/components/frontend/EcadelReader";
+import SocialShare   from "@/components/frontend/SocialShare";
+import PrintButton   from "@/components/ui/PrintButton";
+import CitationCopy  from "@/components/ui/CitationCopy";
 
 const BASE = "https://ecadellabs.cloud";
 
@@ -180,9 +181,16 @@ export default async function PublicationPage({ params }: { params: Promise<{ sl
           </div>
         )}
 
-        {/* Print button */}
+        {/* Citation + print */}
         <div className="no-print" style={{ marginBottom:"2rem" }}>
-          <PrintButton />
+          <CitationCopy
+            title={pub.title}
+            authors={authors}
+            year={pub.publishedAt ? new Date(pub.publishedAt).getFullYear() : new Date().getFullYear()}
+            slug={pub.slug}
+            url={pubUrl}
+          />
+          <div style={{ marginTop:"1rem" }}><PrintButton /></div>
         </div>
 
         {/* ── Social share ────────────────────────────────────────── */}

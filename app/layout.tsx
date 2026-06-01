@@ -29,17 +29,28 @@ export const metadata: Metadata = {
     "African innovation lab", "AI research Africa", "mobile money data infrastructure",
     "offline-first AI systems", "African governance technology",
   ],
-  authors: [{ name: "ECADEL LABS", url: "https://ecadellabs.cloud" }],
-  creator: "ECADEL GROUP LIMITED",
+  authors:  [{ name:"ECADEL LABS", url:"https://ecadellabs.cloud" }],
+  creator:  "ECADEL GROUP LIMITED",
   alternates: {
-    types: { "application/rss+xml": "https://ecadellabs.cloud/feed.xml" },
+    canonical: "https://ecadellabs.cloud",
+    types:     { "application/rss+xml": "https://ecadellabs.cloud/feed.xml" },
+  },
+  verification: {
+    // Add your Google Search Console verification token here when available
+    // google: "YOUR_GOOGLE_VERIFICATION_TOKEN",
   },
   openGraph: {
-    title: "ECADEL LABS — Research & Innovation Engine",
+    title:       "ECADEL LABS — Research & Innovation Engine",
     description: "Advancing African intelligence infrastructure through original research and applied technology.",
-    siteName: "ECADEL LABS",
-    url: "https://ecadellabs.cloud",
-    type: "website",
+    siteName:    "ECADEL LABS",
+    url:         "https://ecadellabs.cloud",
+    type:        "website",
+    locale:      "en_GB",
+  },
+  twitter: {
+    card:    "summary_large_image",
+    title:   "ECADEL LABS — Research & Innovation Engine",
+    description: "Advancing African intelligence infrastructure through original research and applied technology.",
   },
 };
 

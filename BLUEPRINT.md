@@ -672,34 +672,65 @@ cd /var/www/ecadellabs && ./deploy.sh
 - [ ] Uptime monitoring and alerting
 - [ ] PDF publication export (server-side)
 
-### Phase 6 — Depth & Reach (Current Sprint)
+### Phase 6 — Depth & Reach ✓
 **Goal:** Deep academic credibility, content tools, and operational automation.
 
-#### 6A — Admin Content Tools
-- [ ] Newsletter HTML composer — write and send to all subscribers from admin panel
-- [ ] Admin: ORCID and Twitter fields in fellow edit forms (schema done, forms need update)
+#### 6A — Admin Content Tools ✓
+- [x] Newsletter HTML composer — write, preview, and send to all subscribers from admin
+- [x] Admin: ORCID and Twitter fields in fellow new/edit forms
+- [x] Admin: system stats panel on dashboard (DB size, uptime, Node version, page views)
 - [ ] Admin: bulk publish/unpublish on Publications and Research list pages
-- [ ] Admin: publication word count and estimated read time display on list
-- [ ] Admin: search/filter on all list pages
+- [ ] Admin: search/filter on list pages
+- [ ] Admin: word count + read time on Publications list
 
-#### 6B — Frontend Depth
-- [ ] Individual research project collaboration form (`/research/[slug]/collaborate`)
-- [ ] Publication collections / reading lists (group by topic)
-- [ ] Research project progress updates feed (changelog per project)
-- [ ] Public API v2 — include fellows and partnerships endpoints
+#### 6B — Frontend Depth ✓
+- [x] Research collaboration form (`/research/[slug]/collaborate`) with gold CTA on each project
+- [x] Public API v2 — fellows and partnerships endpoints
+- [ ] Publication reading lists / collections (curated by topic)
+- [ ] Research project update/changelog feed
 
-#### 6C — SEO & Discovery
-- [ ] Update sitemap to include all new routes dynamically
-- [ ] OpenGraph image for homepage and fellowship/digest pages
-- [ ] Google Scholar verification (`google-site-verification` meta)
-- [ ] Structured data (JSON-LD) on research project pages (ScholarlyResearch type)
-- [ ] Canonical URLs across all pages
+#### 6C — SEO & Discovery ✓
+- [x] Sitemap updated — `/digest`, `/fellows/[slug]`, `/apply`, `/research/[slug]/collaborate`
+- [x] JSON-LD `ResearchProject` structured data on all research project pages
+- [x] Google Scholar citation meta tags on publications
+- [ ] OG images for homepage, digest, and fellows pages
+- [ ] Canonical URLs added to all page metadata
+- [ ] Google Scholar verification meta tag
 
-#### 6D — Infrastructure
-- [ ] VPS automated daily SQLite backup script (cron + rsync or S3)
-- [ ] PM2 startup confirmation — ensure auto-restart on reboot is locked in
-- [ ] Error monitoring (simple email alert on unhandled 500s)
-- [ ] Admin: database size and last deploy info on dashboard
+#### 6D — Infrastructure ✓
+- [x] VPS backup script (`scripts/backup-db.sh`) — daily SQLite, gzip, 14-day retention
+- [x] Admin system stats — DB size, uptime, total page views on dashboard
+- [ ] PM2 startup cron locked in (run `pm2 startup` on VPS once)
+- [ ] Error monitoring — email alert on unhandled 500s
+
+### Phase 7 — Polish & Precision (Current Sprint)
+**Goal:** Complete every missing detail, make every page credible and complete.
+
+#### 7A — Admin Completeness
+- [ ] Bulk publish/unpublish on Publications and Research list pages (multi-select)
+- [ ] Search/filter bar on Publications, Research, and Fellows admin list pages
+- [ ] BibTeX citation export for publications (`/publications/[slug]/cite.bib`)
+- [ ] Admin: publication read time visible on Publications list
+- [ ] Admin: audit log — last 20 actions (publish, create, delete) with timestamp
+
+#### 7B — Frontend Polish
+- [ ] OG images for `/`, `/digest`, `/fellows`, `/apply` using opengraph-image.tsx
+- [ ] Canonical URL meta on every page
+- [ ] "Copy citation" button on publication pages (BibTeX + APA)
+- [ ] Related publications on homepage (not just featured — most recent)
+- [ ] Fellows page: filter by role (research-fellow / advisor / collaborator)
+
+#### 7C — Public API Expansion
+- [ ] `/api/public/fellows` — GET all active fellows (JSON, CORS)
+- [ ] `/api/public/partnerships` — GET all active partnerships
+- [ ] API versioning header `X-ECADEL-LABS-API: v1`
+- [ ] Update `/api-docs` page with new endpoints
+
+#### 7D — Operations
+- [ ] VPS health check endpoint (`/api/health`) — returns 200 + DB ping
+- [ ] Google Scholar site verification meta tag in layout
+- [ ] Error alert: send email to admin on unhandled server errors
+- [ ] Cron for daily backup locked in on VPS
 
 ---
 
