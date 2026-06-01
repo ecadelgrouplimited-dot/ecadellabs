@@ -1,4 +1,9 @@
 #!/bin/bash
+# ─────────────────────────────────────────────────────────────────────────────
+# WARNING: This script builds on the VPS — it may hang for 40+ minutes.
+# Use deploy-local.sh from your LOCAL machine instead (builds in ~30 seconds).
+# This file is kept as an emergency-only fallback.
+# ─────────────────────────────────────────────────────────────────────────────
 set -e
 
 PROJECT_DIR="/var/www/ecadellabs"
@@ -6,7 +11,8 @@ PROCESS_NAME="ecadellabs"
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  ECADEL LABS — Deploying latest from GitHub"
+echo "  ECADEL LABS — VPS Build (use deploy-local.sh)"
+echo "  WARNING: This may take 10–40 min on VPS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 cd "$PROJECT_DIR"

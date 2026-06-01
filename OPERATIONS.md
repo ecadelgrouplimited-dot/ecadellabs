@@ -51,27 +51,61 @@ npx tsx scripts/create-admin.ts
 
 ## 3. Deployment Workflow
 
-### Standard deploy (push code → VPS pulls)
+> **IMPORTANT:** Never run `npm run build` on the VPS. Turbopack production builds
+> require more CPU than the VPS can sustain — builds hang indefinitely.
+> Always build locally and push compiled output.
+
+### ✅ Standard deploy — build locally, push to VPS (use this always)
 
 ```bash
-# 1. Make changes locally
-# 2. Commit and push to GitHub
-git add .
-git commit -m "your message"
-git push origin main
+# From your local machine (one command):
+./deploy-local.sh
+```
 
-# 3. Run on VPS:
+What it does:
+1. `npm run build` — runs on your fast local machine (~30 sec)
+2. Copies `.next/standalone/` to VPS via rsync
+3. Runs `prisma db push` on VPS for schema changes
+4. Restarts PM2
+
+### What NOT to use
+
+```bash
+# ❌ DO NOT RUN THIS — hangs for 40+ minutes on VPS
 cd /var/www/ecadellabs && ./deploy.sh
 ```
 
-### What `deploy.sh` does:
-1. `git pull origin main`
-2. `npm install`
-3. `npx prisma generate`
-4. `npx prisma db push --accept-data-loss` (schema sync)
-5. `npm run build`
-6. `pm2 restart ecadellabs`
-7. `pm2 save`
+`deploy.sh` is kept only as an emergency fallback if you have no local access.
+
+### Emergency restart (if app is down, no code change needed)
+
+```bash
+# SSH to VPS and run:
+cd /var/www/ecadellabs
+PORT=3001 pm2 start .next/standalone/server.js --name ecadellabs --env production 2>/dev/null || pm2 restart ecadellabs
+pm2 save
+```
+
+### Schema-only change (no code changes, just Prisma)
+
+```bash
+# SSH to VPS:
+cd /var/www/ecadellabs
+npx prisma db push --accept-data-loss
+pm2 restart ecadellabs
+```
+
+### First-time setup (run once after cloning on VPS)
+
+```bash
+cd /var/www/ecadellabs
+npm install
+npx prisma generate
+npx prisma db push
+npx tsx scripts/seed.ts
+npx tsx scripts/create-admin.ts
+# Then deploy normally: ./deploy-local.sh from local machine
+```
 
 ### Emergency restart (PM2 down after VPS reboot):
 ```bash
