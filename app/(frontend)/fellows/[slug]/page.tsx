@@ -15,6 +15,8 @@ const CAT_LABELS: Record<string,string> = {
   "technical-report":"Technical Report","position-paper":"Position Paper",
 };
 
+export const revalidate = 3600  // 1-hour ISR cache
+
 export async function generateMetadata({ params }: { params: Promise<{ slug:string }> }): Promise<Metadata> {
   const { slug } = await params;
   const f = await prisma.fellow.findFirst({ where:{ OR:[{ slug },{ id:slug }], active:true } });

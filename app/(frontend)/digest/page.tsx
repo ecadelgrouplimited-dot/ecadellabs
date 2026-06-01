@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FileText, FlaskConical, Users, ArrowRight, Calendar } from "lucide-react";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300  // 5-min ISR cache;
 
 export const metadata: Metadata = {
   title: "Research Digest",

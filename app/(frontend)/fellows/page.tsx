@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "ECADEL LABS trains engineers, researchers and systems thinkers who will build Africa's intelligence infrastructure. Apply for a fellowship.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300  // 5-min ISR cache;
 
 const ROLE_LABELS: Record<string,string> = {
   "research-fellow":"Research Fellow","resident":"Resident",

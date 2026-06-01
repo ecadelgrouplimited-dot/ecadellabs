@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import FilterBar from "@/components/ui/FilterBar";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 180  // 3-min ISR cache;
 
 export const metadata: Metadata = {
   title: "Research Agenda",

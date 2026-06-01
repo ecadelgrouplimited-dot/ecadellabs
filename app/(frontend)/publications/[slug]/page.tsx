@@ -18,6 +18,8 @@ const CAT_LABELS: Record<string,string> = {
 
 const STATUS_COLORS: Record<string,string> = { active:"#4ab478", completed:"#5B8FBF", planned:"#D4A24C" };
 
+export const revalidate = 3600  // 1-hour ISR cache
+
 export async function generateMetadata({ params }: { params: Promise<{ slug:string }> }): Promise<Metadata> {
   const { slug } = await params;
   const pub = await prisma.publication.findFirst({ where:{ slug, published:true } });

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowRight, FileText, FlaskConical, ChevronRight, ArrowUpRight } from "lucide-react";
 import NewsletterSignup from "@/components/frontend/NewsletterSignup";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300  // 5-min ISR cache;
 
 const GRANT_BODIES = ["African Development Bank","Gates Foundation","USAID","EU Horizon","World Bank IFC"];
 const DOMAINS = ["AI Systems & Machine Learning","Mobile Money & Financial Data","Consequence Intelligence","Offline-First Architecture","Civic Technology","Road Safety Infrastructure"];

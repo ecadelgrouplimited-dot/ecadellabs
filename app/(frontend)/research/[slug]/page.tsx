@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, FileText, Users } from "lucide-react";
 import type { Metadata } from "next";
 
+export const revalidate = 3600  // 1-hour ISR cache
+
 export async function generateMetadata({ params }: { params: Promise<{ slug:string }> }): Promise<Metadata> {
   const { slug } = await params;
   const p = await prisma.researchProject.findFirst({ where:{ slug, published:true } });
