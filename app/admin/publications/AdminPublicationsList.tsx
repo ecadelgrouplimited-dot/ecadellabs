@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Search, Edit2, ExternalLink, CheckSquare, Square, Send, EyeOff, X } from "lucide-react";
 import PublishToggle from "@/components/admin/PublishToggle";
 
-interface Pub { id:string; title:string; slug:string; category:string; published:boolean; createdAt:string }
+interface Pub { id:string; title:string; slug:string; category:string; published:boolean; createdAt:string; readMins:number|null }
 
 export default function AdminPublicationsList({ pubs, initialQuery, catLabels }: {
   pubs:          Pub[];
@@ -92,6 +92,7 @@ export default function AdminPublicationsList({ pubs, initialQuery, catLabels }:
           <span style={{ flex:"1 1 0" }}>Title</span>
           <span style={{ width:"140px", flexShrink:0 }}>Category</span>
           <span style={{ width:"110px", flexShrink:0 }}>Status</span>
+          <span style={{ width:"60px",  flexShrink:0 }}>Read</span>
           <span style={{ width:"90px",  flexShrink:0 }}>Date</span>
           <span style={{ width:"72px",  flexShrink:0 }} />
         </div>
@@ -124,6 +125,9 @@ export default function AdminPublicationsList({ pubs, initialQuery, catLabels }:
               <PublishToggle id={pub.id} published={pub.published} endpoint="publications" />
             </div>
 
+            <div style={{ width:"60px", flexShrink:0, fontSize:"10px", color:"rgba(200,196,190,0.38)", fontFamily:"monospace" }}>
+              {pub.readMins ? `~${pub.readMins}m` : "—"}
+            </div>
             <div style={{ width:"90px", flexShrink:0, fontSize:"11px", color:"rgba(200,196,190,0.38)", fontFamily:"monospace" }}>
               {new Date(pub.createdAt).toLocaleDateString("en-GB",{ day:"2-digit", month:"short", year:"2-digit" })}
             </div>

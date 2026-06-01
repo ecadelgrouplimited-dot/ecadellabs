@@ -12,6 +12,7 @@ const LINKS = [
   { href:"/fellows",      label:"Fellows" },
   { href:"/grants",       label:"Grants" },
   { href:"/partnerships", label:"Partners" },
+  { href:"/about",        label:"About" },
 ];
 
 export default function Navbar() {

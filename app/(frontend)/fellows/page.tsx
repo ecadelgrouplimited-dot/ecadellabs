@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Suspense } from "react";
+import FilterBar from "@/components/ui/FilterBar";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,11 +23,20 @@ const VALUE_PROPS = [
   { title:"Institutional Network", desc:"Connect with ECADEL GROUP's partners, grant bodies, and university collaborators across Africa and internationally." },
 ];
 
-export default async function FellowsPage() {
+const ROLE_OPTIONS = [
+  { value:"research-fellow", label:"Research Fellows" },
+  { value:"resident",        label:"Residents" },
+  { value:"collaborator",    label:"Collaborators" },
+  { value:"advisor",         label:"Advisors" },
+];
+
+export default async function FellowsPage({ searchParams }: { searchParams: Promise<{ role?:string }> }) {
+  const { role } = await searchParams;
   const fellows = await prisma.fellow.findMany({
-    where: { active:true },
+    where: { active:true, ...(role ? { role } : {}) },
     orderBy: [{ featured:"desc" },{ name:"asc" }],
   });
+  const totalCount = await prisma.fellow.count({ where:{ active:true } });
 
   return (
     <div style={{ backgroundColor:"#060608", minHeight:"100vh" }}>
@@ -38,9 +49,17 @@ export default async function FellowsPage() {
           <h1 style={{ fontSize:"clamp(1.8rem,2.5vw,2.5rem)", fontWeight:700, color:"#F0EDE6", lineHeight:1.1, fontFamily:"var(--font-display)", marginBottom:"1.125rem" }}>
             Fellows &amp; Researchers.
           </h1>
-          <p style={{ color:"rgba(200,196,190,0.62)", maxWidth:"42rem", lineHeight:1.75, fontSize:"0.9375rem" }}>
+          <p style={{ color:"rgba(200,196,190,0.62)", maxWidth:"42rem", lineHeight:1.75, fontSize:"0.9375rem", marginBottom:"1.75rem" }}>
             ECADEL LABS trains the engineers, researchers, and systems thinkers who will build Africa&apos;s intelligence infrastructure. Our fellowship programme connects ambitious Africans with the problems worth solving.
           </p>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"1rem" }}>
+            <Suspense>
+              <FilterBar param="role" options={ROLE_OPTIONS} allLabel={`All Fellows (${totalCount})`} />
+            </Suspense>
+            <Link href="/fellows/apply" style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.6rem 1.25rem", backgroundColor:"#C8A96E", color:"#060608", fontFamily:"var(--font-display)", fontWeight:600, fontSize:"0.8125rem", textDecoration:"none", borderRadius:"3px", flexShrink:0 }}>
+              Apply for a Fellowship <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
       </div>
 

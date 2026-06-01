@@ -15,7 +15,7 @@ export default async function PublicationsAdmin({ searchParams }: { searchParams
   const { q } = await searchParams;
   const query = q?.trim() ?? "";
 
-  const all = await prisma.publication.findMany({ orderBy:{ createdAt:"desc" } });
+  const all = await prisma.publication.findMany({ orderBy:{ createdAt:"desc" }, select:{ id:true, title:true, slug:true, category:true, published:true, createdAt:true, content:true } });
   const pubs = query
     ? all.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()) || p.slug.includes(query.toLowerCase()))
     : all;
@@ -42,7 +42,11 @@ export default async function PublicationsAdmin({ searchParams }: { searchParams
 
       {/* Client component handles search input + bulk actions */}
       <AdminPublicationsList
-        pubs={pubs.map((p) => ({ id:p.id, title:p.title, slug:p.slug, category:p.category, published:p.published, createdAt:p.createdAt.toISOString() }))}
+        pubs={pubs.map((p) => ({
+          id:p.id, title:p.title, slug:p.slug, category:p.category,
+          published:p.published, createdAt:p.createdAt.toISOString(),
+          readMins: p.content ? Math.max(1, Math.ceil(p.content.split(/\s+/).filter(Boolean).length / 200)) : null,
+        }))}
         initialQuery={query}
         catLabels={CAT}
       />

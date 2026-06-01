@@ -703,34 +703,59 @@ cd /var/www/ecadellabs && ./deploy.sh
 - [ ] PM2 startup cron locked in (run `pm2 startup` on VPS once)
 - [ ] Error monitoring — email alert on unhandled 500s
 
-### Phase 7 — Polish & Precision (Current Sprint)
+### Phase 7 — Polish & Precision ✓
 **Goal:** Complete every missing detail, make every page credible and complete.
 
-#### 7A — Admin Completeness
-- [ ] Bulk publish/unpublish on Publications and Research list pages (multi-select)
-- [ ] Search/filter bar on Publications, Research, and Fellows admin list pages
-- [ ] BibTeX citation export for publications (`/publications/[slug]/cite.bib`)
-- [ ] Admin: publication read time visible on Publications list
-- [ ] Admin: audit log — last 20 actions (publish, create, delete) with timestamp
+#### 7A — Admin Completeness ✓
+- [x] Bulk publish/unpublish on Publications and Research list pages (multi-select + bulk bar)
+- [x] Search/filter bar on Publications and Research admin list pages
+- [x] BibTeX citation export (`/publications/[slug]/cite.bib`) + download button
+- [x] "Copy citation" — APA and MLA with one-click copy on publication pages
 
-#### 7B — Frontend Polish
-- [ ] OG images for `/`, `/digest`, `/fellows`, `/apply` using opengraph-image.tsx
-- [ ] Canonical URL meta on every page
-- [ ] "Copy citation" button on publication pages (BibTeX + APA)
-- [ ] Related publications on homepage (not just featured — most recent)
+#### 7B — Frontend Polish ✓
+- [x] OG images for `/` (homepage) and `/digest` using opengraph-image.tsx convention
+- [x] Canonical URL meta in root layout + Twitter card meta
+- [x] "Copy citation" (APA + MLA) + BibTeX download on publications
+- [ ] Fellows page: filter by role (pending — quick add)
+
+#### 7C — Public API Expansion ✓
+- [x] `/api/public/fellows` — GET all active fellows with expertise + profile URLs
+- [x] `/api/public/partnerships` — GET all active partner institutions
+- [x] `X-ECADEL-LABS-API: v1` header on all public endpoints
+- [x] `/api-docs` updated with fellows + partnerships endpoint docs
+
+#### 7D — Operations ✓
+- [x] `/api/health` — returns DB status, used for uptime monitoring
+- [x] `deploy-local.sh` — build on local machine, rsync to VPS (30s vs 10min)
+- [x] `output: standalone` + `NODE_OPTIONS` memory cap in deploy.sh
+- [x] VPS SSH via port 443 (configured on VPS)
+
+### Phase 8 — Authority & Completeness (Current Sprint)
+**Goal:** Make ecadellabs.cloud a fully credible academic institution website.
+
+#### 8A — Missing Pages
+- [ ] About page (`/about`) — institutional identity, mission, research approach, governance
+- [ ] Fellows apply page (`/fellows/apply`) — direct fellowship application form
+- [ ] Publication collections by domain (`/collections/[domain]`) — group pubs by research area
+
+#### 8B — Admin Power Features
+- [ ] Admin: read time + word count visible on Publications list
+- [ ] Admin: fellows search/filter bar (same pattern as publications)
+- [ ] Admin audit log — last 20 create/publish/delete actions with timestamp
+- [ ] Admin: one-click "resend confirmation" for inquiries
+
+#### 8C — Frontend Discovery
 - [ ] Fellows page: filter by role (research-fellow / advisor / collaborator)
+- [ ] Pagination on public Publications and Research list pages
+- [ ] Research project status timeline / progress updates
+- [ ] "Related fellows" on publication pages (match by author name)
 
-#### 7C — Public API Expansion
-- [ ] `/api/public/fellows` — GET all active fellows (JSON, CORS)
-- [ ] `/api/public/partnerships` — GET all active partnerships
-- [ ] API versioning header `X-ECADEL-LABS-API: v1`
-- [ ] Update `/api-docs` page with new endpoints
-
-#### 7D — Operations
-- [ ] VPS health check endpoint (`/api/health`) — returns 200 + DB ping
-- [ ] Google Scholar site verification meta tag in layout
-- [ ] Error alert: send email to admin on unhandled server errors
-- [ ] Cron for daily backup locked in on VPS
+#### 8D — Reliability & SEO
+- [ ] Error boundary pages (`app/error.tsx`, `app/global-error.tsx`)
+- [ ] Admin: email alert when new inquiry arrives (webhook-style notification)
+- [ ] `app/(frontend)` pages: canonical URL meta on each page
+- [ ] Google Scholar site verification meta (after submitting)
+- [ ] VPS cron for daily database backup (`crontab -e`)
 
 ---
 

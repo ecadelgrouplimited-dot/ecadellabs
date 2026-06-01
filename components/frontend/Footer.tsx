@@ -12,6 +12,7 @@ const RESEARCH_LINKS = [
 ];
 
 const INSTITUTION_LINKS = [
+  { href:"/about",                  label:"About ECADEL LABS",   external:false },
   { href:"/contact",                label:"Contact",             external:false },
   { href:"/api-docs",              label:"Research API",        external:false },
   { href:"https://ecadelgroup.com", label:"ECADEL GROUP",        external:true },
