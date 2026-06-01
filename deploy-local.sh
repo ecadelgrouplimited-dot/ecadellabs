@@ -1,9 +1,7 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────────────
 # ECADEL LABS — Local build + push to VPS
-# Builds on your fast local machine, ships compiled output to VPS.
-# VPS never runs npm build — build time drops from 10+ min to ~30 sec.
-#
+# Builds on your fast local machine (~30 sec), ships to VPS.
 # Usage:  ./deploy-local.sh
 # ─────────────────────────────────────────────────────────────────────────────
 set -e
@@ -18,53 +16,51 @@ echo "  ECADEL LABS — Local Build → VPS Deploy"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # ── 1. Build locally ──────────────────────────────────
-echo "› Building locally (fast)..."
+echo "› Building locally..."
 npm run build
+echo "✓ Build complete"
 
-# Stage static assets into standalone bundle (required)
-cp -r public .next/standalone/public 2>/dev/null || true
-cp -r .next/static .next/standalone/.next/static 2>/dev/null || true
-
-echo "✓ Local build complete"
-
-# ── 2. Push code + built artifacts ────────────────────
-echo "› Pushing to VPS..."
-
-# Push the git commit first (so VPS has latest code)
+# ── 2. Push to GitHub ─────────────────────────────────
 git push origin main 2>/dev/null || true
 
-# Stop the app on VPS to allow file replacement
+# ── 3. Stop app on VPS ────────────────────────────────
 ssh "$VPS_HOST" "pm2 stop $PROCESS 2>/dev/null || true"
 
-# Rsync the standalone build — this replaces the VPS build
+# ── 4. Rsync .next build ──────────────────────────────
+# IMPORTANT: exclude *.node native binaries — they are platform-specific.
+# The VPS has its own compiled binaries in node_modules/ which npm start uses.
+echo "› Syncing build to VPS..."
 rsync -az --delete \
   --exclude="prisma/ecadellabs.db" \
   --exclude="prisma/*.db-journal" \
   --exclude="prisma/*.db-wal" \
   --exclude=".env.local" \
-  --exclude="node_modules/.cache" \
-  .next/standalone/ "$VPS_HOST:$VPS_DIR/.next/standalone/"
+  --exclude="**/*.node" \
+  .next/ "$VPS_HOST:$VPS_DIR/.next/"
 
-# Rsync static files separately (needed by standalone)
-rsync -az .next/static/ "$VPS_HOST:$VPS_DIR/.next/static/"
-
-# Rsync public folder
 rsync -az --delete public/ "$VPS_HOST:$VPS_DIR/public/"
-
-# Push Prisma schema (in case of schema changes — don't overwrite DB)
 rsync -az prisma/schema.prisma "$VPS_HOST:$VPS_DIR/prisma/schema.prisma"
+echo "✓ Files synced"
 
-echo "✓ Files synced to VPS"
-
-# ── 3. Run DB migration + restart on VPS ──────────────
+# ── 5. On VPS: DB sync + restart ──────────────────────
 echo "› Finalising on VPS..."
 ssh "$VPS_HOST" "
+  set -e
   cd $VPS_DIR
+
+  # Sync DB schema if changed
   npx prisma generate
   npx prisma db push --accept-data-loss
-  PORT=3001 pm2 restart $PROCESS 2>/dev/null || \
-    PORT=3001 pm2 start .next/standalone/server.js --name $PROCESS --env production
+
+  # Start/restart using npm start
+  # This uses the VPS's own node_modules/ (Linux-compiled binaries stay intact)
+  pm2 restart $PROCESS 2>/dev/null || \
+    PORT=3001 pm2 start npm --name $PROCESS -- start
   pm2 save
+
+  sleep 5
+  STATUS=\$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3001/)
+  echo \"Site check: HTTP \$STATUS\"
 "
 
 echo ""
